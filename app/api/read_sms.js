@@ -3,7 +3,7 @@ export function readOldSMS(contentResolver) {
   // https://github.com/NativeScript/NativeScript/issues/5838
   // android.net.Uri.parse(dataString)
   const cursor = contentResolver.query(
-    android.net.Uri.parse("content://sms/inbox"),
+    android.net.Uri.parse("content://sms/sent"),
     null,
     null,
     null,
@@ -21,7 +21,6 @@ export function readOldSMS(contentResolver) {
         msgData +=
           " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
       }
-      console.log(msgData);
     } while (cursor.moveToNext());
   } else {
     // empty box, no SMS

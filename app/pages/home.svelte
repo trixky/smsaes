@@ -1,5 +1,6 @@
 <script>
   import Contact from "./contact.svelte";
+  import AddContactActionItem from "../components/actionItems/add_contact.svelte";
   import { navigate } from "svelte-native";
   import {
     getReadSMSPermission,
@@ -44,7 +45,9 @@
 <page>
   {#if pageLoaded}
     {#if readSMSPermissionGranted}
-      <actionBar title="Svelte Native App" />
+      <actionBar title="My App">
+        <AddContactActionItem />
+      </actionBar>
       <scrollView orientation="vertical">
         <stackLayout>
           <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -66,19 +69,14 @@
             >
               <formattedString>
                 <span text={contact.name} class="contact-name" />
-                <span text={" s" + contact.phone_number} />
+                <span text={" " + contact.phone_number} />
               </formattedString>
             </button>
           {/each}
         </stackLayout>
       </scrollView>
     {:else}
-      <actionBar title="Svelte Native App" />
       <stackLayout>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label>{readSMSPermissionGranted} ???</label>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label>{typeof readSMSPermissionGranted} ???</label>
         <button text="read SMS permissions" on:tap={askReadSMSPermission} />
         <button
           text="updattte permission"
