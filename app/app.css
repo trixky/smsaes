@@ -14,3 +14,6 @@ The imported CSS rules must precede all other types of rules.
 @import '~@nativescript/theme/css/default.css';
 @import './font-awesome.css';
 
+* {
+    --main-blue-1: rgb(81, 172, 167);
+}
