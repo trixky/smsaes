@@ -2,6 +2,7 @@
   import Contact from "./contact.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
   import { navigate } from "svelte-native";
+  import { getContacts } from "../db/contact";
   import {
     getReadSMSPermission,
     askReadSMSPermission,
@@ -15,16 +16,7 @@
   let readSMSPermissionGranted = false;
   let pageLoaded = false;
 
-  let contacts = [
-    {
-      name: "trixky",
-      phone_number: "+33 000000000",
-    },
-    {
-      name: "chat",
-      phone_number: "+33 090909090",
-    },
-  ];
+  let contacts = [];
 
   function infiniteGetReadSMSPermission() {
     if (!readSMSPermissionGranted) {
@@ -40,6 +32,12 @@
   setTimeout(() => {
     pageLoaded = true;
   }, 1000);
+
+  async function refreshContacts() {
+    contacts = await getContacts();
+  }
+
+  refreshContacts();
 </script>
 
 <page>
@@ -51,13 +49,13 @@
       <scrollView orientation="vertical">
         <stackLayout>
           <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label>{final}</label>
-          <button
+          <!-- <label>{final}</label> -->
+          <!-- <button
             text="read old SMS"
             on:tap={() => {
               final = readOldSMS(contentResolver);
             }}
-          />
+          /> -->
           {#each contacts as contact}
             <button
               class="contact-button"
@@ -68,7 +66,7 @@
                 })}
             >
               <formattedString>
-                <span text={contact.name} class="contact-name" />
+                <span text={contact.firstname} class="contact-label" />
                 <span text={" " + contact.phone_number} />
               </formattedString>
             </button>
@@ -99,10 +97,11 @@
 <style>
   .contact-button {
     text-align: left;
-    border-width: 2 0 0 0;
-    border-color: rgb(99, 224, 99);
+    background-color: var(--main-grey-10);
+    padding: 0 15;
   }
-  .contact-name {
+
+  .contact-label {
     text-decoration: underline;
     padding-right: 30px;
   }

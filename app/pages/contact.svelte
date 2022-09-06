@@ -15,7 +15,7 @@
     >
       <formattedString>
         <span class="fas" text="&#xf135;" />
-        <span text=" {contact.name + ' ' + contact.phone_number}" />
+        <span text=" {contact.firstname + ' ' + contact.phone_number}" />
       </formattedString>
     </label>
   </gridLayout>

@@ -1,5 +1,7 @@
 <script lang="typescript">
   import SaveContactActionItem from "../components/actionItems/save_contact.svelte";
+  import BackActionItem from "../components/actionItems/back.svelte";
+  import * as inputChecker from "../utils/input_checker";
 
   const initial_phone_number = "+";
 
@@ -7,7 +9,23 @@
   let firstname = "";
   let lastname = "";
   let email = "";
-  let favorite = false;
+
+  let phone_number_error = false;
+  let firstname_error = false;
+
+  let phone_number_had_an_error = false;
+  let firstname_had_an_error = false;
+
+  $: phone_number_had_an_error =
+    phone_number_error || phone_number_had_an_error;
+  $: firstname_had_an_error = firstname_error || firstname_had_an_error;
+
+  $: _phone_number_error =
+    phone_number_had_an_error &&
+    inputChecker.checkPhoneNumber(phone_number) != null;
+
+  $: _firstname_error =
+    firstname_had_an_error && inputChecker.checkFirstname(firstname) != null;
 
   function handleBlurPhoneNumber() {
     let filtered_phone_number = "";
@@ -24,8 +42,16 @@
 </script>
 
 <page>
-  <actionBar title="New contact">
-    <SaveContactActionItem />
+  <actionBar title="">
+    <BackActionItem />
+    <SaveContactActionItem
+      {phone_number}
+      {firstname}
+      {lastname}
+      {email}
+      bind:firstname_error
+      bind:phone_number_error
+    />
   </actionBar>
   <scrollView orientation="vertical">
     <stackLayout class="body">
@@ -37,6 +63,7 @@
         </formattedString></label
       >
       <textField
+        class:error={_phone_number_error}
         class="input-field"
         bind:text={phone_number}
         on:blur={handleBlurPhoneNumber}
@@ -49,7 +76,12 @@
           <span class="star" text=" *" />
         </formattedString></label
       >
-      <textField class="input-field" bind:text={firstname} maxLength={20} />
+      <textField
+        class="input-field"
+        class:error={_firstname_error}
+        bind:text={firstname}
+        maxLength={20}
+      />
       <label class="input-label">Lastname</label>
       <textField class="input-field" bind:text={lastname} maxLength={20} />
       <label class="input-label">Email</label>
@@ -77,6 +109,10 @@
     margin-top: 0;
     margin-bottom: 15;
     padding-left: 5;
+  }
+
+  .input-field.error {
+    border-color: rgb(205, 99, 99);
   }
 
   .title {
