@@ -1,5 +1,6 @@
 <script>
   import Contact from "./contact.svelte";
+  import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
   import { navigate } from "svelte-native";
   import { getContacts } from "../db/contact";
@@ -61,13 +62,16 @@
               class="contact-button"
               on:tap={() =>
                 navigate({
-                  page: Contact,
+                  page: Chat,
                   props: { contact },
                 })}
             >
               <formattedString>
-                <span text={contact.firstname} class="contact-label" />
-                <span text={" " + contact.phone_number} />
+                <span text={contact.firstname} />
+                {#if contact.lastname.length > 0}
+                  <span class="lastname" text={" " + contact.lastname} />
+                {/if}
+                <span text={" (" + contact.phone_number + ")"} />
               </formattedString>
             </button>
           {/each}
@@ -101,8 +105,7 @@
     padding: 0 15;
   }
 
-  .contact-label {
-    text-decoration: underline;
-    padding-right: 30px;
+  .lastname {
+    color: var(--main-grey-3);
   }
 </style>

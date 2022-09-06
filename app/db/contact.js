@@ -34,8 +34,8 @@ async function insert(db, contact) {
       [
         contact.phone_number,
         contact.firstname,
-        contact.lastname | "",
-        contact.email | "",
+        contact.lastname,
+        contact.email,
       ],
       function (err, result) {
         if (err != null) return reject(err);

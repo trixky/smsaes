@@ -4,16 +4,13 @@
   import { saveNewContact } from "../../db/contact";
   import * as inputChecker from "../../utils/input_checker";
 
-  export let phone_number;
-  export let firstname;
-  export let lastname = "";
-  export let email = "";
+  export let contact;
 
   export let phone_number_error = false;
   export let firstname_error = false;
 
   function checkPhoneNumber() {
-    const error = inputChecker.checkPhoneNumber(phone_number);
+    const error = inputChecker.checkPhoneNumber(contact.phone_number);
 
     if (error != null) {
       alert(error.message);
@@ -24,7 +21,7 @@
   }
 
   function checkFirstname() {
-    const error = inputChecker.checkFirstname(firstname);
+    const error = inputChecker.checkFirstname(contact.firstname);
 
     if (error != null) {
       alert(error.message);
@@ -42,10 +39,10 @@
 
     if (
       (await saveNewContact({
-        phone_number,
-        firstname,
-        lastname,
-        email,
+        phone_number: contact.phone_number,
+        firstname: contact.firstname,
+        lastname: contact.lastname,
+        email: contact.email,
       })) != null
     )
       navigate({

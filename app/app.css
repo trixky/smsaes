@@ -17,4 +17,6 @@ The imported CSS rules must precede all other types of rules.
 * {
     --main-blue-1: rgb(81, 172, 167);
     --main-grey-10: #222;
+    --main-grey-12: #111;
+    --main-grey-3: #aaa;
 }
