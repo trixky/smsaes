@@ -8,8 +8,9 @@
     getReadSMSPermission,
     askReadSMSPermission,
   } from "../api/permissions";
-  import { readOldSMS } from "../api/read_sms";
+  import { readInboxSMS } from "../api/read_sms";
   import * as app from "@nativescript/core/application";
+  import ConversationsStore from "../stores/conversations";
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
@@ -39,6 +40,7 @@
   }
 
   refreshContacts();
+  ConversationsStore.refresh(contentResolver);
 </script>
 
 <page>
@@ -54,7 +56,7 @@
           <!-- <button
             text="read old SMS"
             on:tap={() => {
-              final = readOldSMS(contentResolver);
+              final = readInboxSMS(contentResolver);
             }}
           /> -->
           {#each contacts as contact}

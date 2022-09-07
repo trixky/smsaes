@@ -1,10 +1,13 @@
 <script lang="typescript">
   import DetailContactActionItem from "../components/actionItems/detail_contact.svelte";
+  import messages from "../stores/conversations";
+  import ConversationsStore from "../stores/conversations";
+  import { timestampToString } from "../utils/date";
 
   export let contact;
 
   let sender_message = "";
-  let encryption_checked = false;
+  // let encryption_checked = false;
 
   $: send_button_blocked = sender_message.length === 0;
 </script>
@@ -28,75 +31,34 @@
     </stackLayout> -->
     <scrollView row="1">
       <stackLayout class="messages">
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
-        <label class="message mine">asdfasdfc--main-grey-3</label>
-        <label class="message">asdfasdfc--main-grey-3</label>
+        {#if $ConversationsStore.hasOwnProperty(contact.phone_number)}
+          {#each $ConversationsStore[contact.phone_number] as message}
+            <stackLayout
+              class="message"
+              width="70%"
+              horizontalAlignment={message.from_me ? "right" : "left"}
+            >
+              <label
+                class="message-label"
+                horizontalAlignment={message.from_me ? "right" : "left"}
+                >{timestampToString(message.date)}</label
+              >
+              <textView
+                textWrap="true"
+                editable={false}
+                class="message-body"
+                style="text-align: {message.from_me ? 'right' : 'left'};"
+                >{message.body}
+              </textView>
+            </stackLayout>
+          {/each}
+        {/if}
       </stackLayout>
     </scrollView>
     <stackLayout class="sender" row="2">
       <gridLayout columns="*, auto" rows="auto">
         <textView
+          height="auto"
           class="input-field"
           row="0"
           col="0"
@@ -130,7 +92,17 @@
   }
 
   .message {
-    /* margin: 0 15; */
+    margin-bottom: 8;
+  }
+
+  .message-label {
+    color: var(--main-grey-3);
+  }
+
+  .message-body {
+    min-height: 0;
+    padding: 0;
+    margin: 0;
   }
 
   .message.mine {
@@ -143,8 +115,8 @@
 
   .input-field {
     border-width: 0;
-    padding: 15 15;
-    padding-bottom: 22;
+    min-height: 0;
+    padding: 18 15;
     margin: 0;
   }
 

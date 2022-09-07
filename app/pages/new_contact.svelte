@@ -45,10 +45,12 @@
   <actionBar title="">
     <BackActionItem />
     <SaveContactActionItem
-      {phone_number}
-      {firstname}
-      {lastname}
-      {email}
+      contact={{
+        phone_number,
+        firstname,
+        lastname,
+        email,
+      }}
       bind:firstname_error
       bind:phone_number_error
     />
