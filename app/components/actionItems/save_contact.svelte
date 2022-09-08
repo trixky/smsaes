@@ -32,8 +32,8 @@
   }
 
   async function addContact() {
-    const temp_phone_number_error = checkPhoneNumber();
     const temp_firstname_error = checkFirstname();
+    const temp_phone_number_error = checkPhoneNumber();
 
     if (temp_phone_number_error || temp_firstname_error) return;
 
@@ -43,6 +43,7 @@
         firstname: contact.firstname,
         lastname: contact.lastname,
         email: contact.email,
+        note: contact.note,
       })) != null
     )
       navigate({

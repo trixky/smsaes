@@ -1,7 +1,7 @@
 import sqlite from "nativescript-sqlite";
 import { initDB } from "./global";
 
-const db_name = "global";
+const db_name = "global2";
 const contacts_table_name = "contacts";
 
 async function createTableIfNotExists(db) {
@@ -14,7 +14,8 @@ async function createTableIfNotExists(db) {
             phone_number TEXT NOT NULL, \
             firstname TEXT NOT NULL, \
             lastname TEXT, \
-            email TEXT \
+            email TEXT, \
+            note TEXT \
           );",
       (err, result) => {
         resolve(err != null);
@@ -30,12 +31,13 @@ async function insert(db, contact) {
     db.execSQL(
       "INSERT INTO " +
         contacts_table_name +
-        " (phone_number, firstname, lastname, email) values (?, ?, ?, ?);",
+        " (phone_number, firstname, lastname, email, note) values (?, ?, ?, ?, ?);",
       [
         contact.phone_number,
         contact.firstname,
         contact.lastname,
         contact.email,
+        contact.note,
       ],
       function (err, result) {
         if (err != null) return reject(err);
@@ -53,6 +55,7 @@ export async function saveNewContact(contact) {
     const id = await insert(db, contact);
     return id;
   } catch (err) {
+    console.log("error: db >", err);
     return null;
   }
 }
@@ -62,7 +65,7 @@ export async function saveNewContact(contact) {
 async function getAll(db) {
   return new Promise((resolve, reject) => {
     db.all(
-      "SELECT phone_number, firstname, lastname, email FROM " +
+      "SELECT phone_number, firstname, lastname, email, note FROM " +
         contacts_table_name +
         ";",
       function (err, result) {
@@ -85,6 +88,7 @@ export async function getContacts() {
       firstname: contact[1],
       lastname: contact[2],
       email: contact[3],
+      note: contact[4],
     }));
   } catch (err) {
     return [];

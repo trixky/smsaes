@@ -9,6 +9,7 @@
   let firstname = "";
   let lastname = "";
   let email = "";
+  let note = "";
 
   let phone_number_error = false;
   let firstname_error = false;
@@ -50,6 +51,7 @@
         firstname,
         lastname,
         email,
+        note,
       }}
       bind:firstname_error
       bind:phone_number_error
@@ -93,6 +95,15 @@
         maxLength={50}
         keyboardType="email"
       />
+      <label class="input-label">Note</label>
+
+      <textView
+        class="input-field note"
+        height="auto"
+        maxLength={300}
+        bind:text={note}
+      />
+
       <label class="title">Encryption</label>
     </stackLayout>
   </scrollView>
@@ -111,6 +122,10 @@
     margin-top: 0;
     margin-bottom: 15;
     padding-left: 5;
+  }
+
+  .input-field.note {
+    min-height: 0;
   }
 
   .input-field.error {
