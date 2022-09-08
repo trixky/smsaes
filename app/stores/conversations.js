@@ -18,6 +18,24 @@ function createMessages() {
       });
       set(conversations);
     },
+    addSendedMessage: (message) => {
+      update((conversations) => {
+        conversations[message.address].push(message);
+        return conversations;
+      });
+    },
+    updateSendedMessageIntent: (message, intent) => {
+      update((conversations) => {
+        const new_conversations = { ...conversations };
+
+        new_conversations[message.address].find(
+          (_message) =>
+            _message.date === message.date && _message.local != undefined
+        ).local.intent = intent;
+
+        return new_conversations;
+      });
+    },
     reset: () => set([]),
   };
 }

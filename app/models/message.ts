@@ -10,4 +10,20 @@ export default interface Message {
   seen: boolean;
   read: boolean;
   deleted: boolean;
+  local:
+    | {
+        intent:
+          | {
+              ended: boolean;
+              error: boolean;
+            }
+          | undefined;
+        delivery:
+          | {
+              ended: boolean;
+              error: boolean;
+            }
+          | undefined;
+      }
+    | undefined;
 }

@@ -1,3 +1,4 @@
+// https://stackoverflow.com/questions/25627673/failed-sending-messages-storage-android
 const MESSAGE_IN = "inbox";
 const MESSAGE_OUT = "sent";
 
@@ -25,6 +26,7 @@ export function readInboxSMS(contentResolver) {
 
         for (let idx = 0; idx < cursor.getColumnCount(); idx++) {
           message.from_me = from_me;
+          message.local = undefined;
 
           const column_name = cursor.getColumnName(idx);
           const column_value = cursor.getString(idx);

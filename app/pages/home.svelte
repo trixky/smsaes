@@ -7,6 +7,8 @@
   import {
     getReadSMSPermission,
     askReadSMSPermission,
+    getSendSMSPermission,
+    askSendSMSPermission,
   } from "../api/permissions";
   import { readInboxSMS } from "../api/read_sms";
   import * as app from "@nativescript/core/application";
@@ -14,11 +16,11 @@
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
-  let final = 0;
-  let readSMSPermissionGranted = false;
+  let contacts = [];
   let pageLoaded = false;
 
-  let contacts = [];
+  let readSMSPermissionGranted = false;
+  let sendSMSPermissionGranted = false;
 
   function infiniteGetReadSMSPermission() {
     if (!readSMSPermissionGranted) {
@@ -26,10 +28,22 @@
       setTimeout(() => {
         infiniteGetReadSMSPermission();
       }, 100);
+    } else {
+      ConversationsStore.refresh(contentResolver);
+    }
+  }
+
+  function infiniteGetSendSMSPermission() {
+    if (!sendSMSPermissionGranted) {
+      sendSMSPermissionGranted = getSendSMSPermission();
+      setTimeout(() => {
+        infiniteGetSendSMSPermission();
+      }, 100);
     }
   }
 
   infiniteGetReadSMSPermission();
+  infiniteGetSendSMSPermission();
 
   setTimeout(() => {
     pageLoaded = true;
@@ -40,12 +54,12 @@
   }
 
   refreshContacts();
-  ConversationsStore.refresh(contentResolver);
+  if (readSMSPermissionGranted) ConversationsStore.refresh(contentResolver);
 </script>
 
 <page>
   {#if pageLoaded}
-    {#if readSMSPermissionGranted}
+    {#if readSMSPermissionGranted && sendSMSPermissionGranted}
       <actionBar title="My App">
         <AddContactActionItem />
       </actionBar>
@@ -81,7 +95,12 @@
       </scrollView>
     {:else}
       <stackLayout>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label>sendSMSPermissionGranted: {sendSMSPermissionGranted}</label>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label>readSMSPermissionGranted: {readSMSPermissionGranted}</label>
         <button text="read SMS permissions" on:tap={askReadSMSPermission} />
+        <button text="send SMS permissions" on:tap={askSendSMSPermission} />
         <button
           text="updattte permission"
           on:tap={() => {

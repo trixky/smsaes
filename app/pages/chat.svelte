@@ -1,15 +1,62 @@
 <script lang="typescript">
   import DetailContactActionItem from "../components/actionItems/detail_contact.svelte";
-  import messages from "../stores/conversations";
   import ConversationsStore from "../stores/conversations";
   import { timestampToString } from "../utils/date";
+  import sendSMS from "../telephony/send";
 
   export let contact;
+  let local_id = 0;
 
   let sender_message = "";
   // let encryption_checked = false;
 
   $: send_button_blocked = sender_message.length === 0;
+
+  function handleSendSMS() {
+    const current_sender_message = sender_message;
+    sender_message = "";
+
+    const message = {
+      id: "local",
+      address: contact.phone_number, // phone number
+      from_me: true,
+      body: current_sender_message,
+      date: Date.now(),
+      date_sent: 0,
+      seen: true,
+      read: true,
+      deleted: false,
+      local: {
+        intent: {
+          ended: false,
+          error: false,
+        },
+        delivery: undefined,
+      },
+    };
+
+    ConversationsStore.addSendedMessage(message);
+
+    sendSMS(
+      contact.phone_number,
+      current_sender_message,
+      message.date.toString() + (++local_id).toString(),
+      (ok) => {
+        ConversationsStore.updateSendedMessageIntent(message, {
+          ended: true,
+          error: !ok,
+        });
+      }
+    );
+  }
+
+  function localMessageIsSending(message) {
+    return message?.local?.intent.ended === false;
+  }
+
+  function localMessageHadAnError(message) {
+    return message.local?.intent.error === true;
+  }
 </script>
 
 <page>
@@ -29,8 +76,8 @@
         style="background-color: red;"
       />
     </stackLayout> -->
-    <scrollView row="1">
-      <stackLayout class="messages">
+    <scrollView row="1" class="invert">
+      <stackLayout class="messages invert">
         {#if $ConversationsStore.hasOwnProperty(contact.phone_number)}
           {#each $ConversationsStore[contact.phone_number] as message}
             <stackLayout
@@ -46,6 +93,8 @@
               <textView
                 textWrap="true"
                 editable={false}
+                class:sending={localMessageIsSending(message)}
+                class:error={localMessageHadAnError(message)}
                 class="message-body"
                 style="text-align: {message.from_me ? 'right' : 'left'};"
                 >{message.body}
@@ -70,9 +119,7 @@
           class="send-button"
           row="0"
           col="1"
-          on:tap={() => {
-            console.log("osdifjsd");
-          }}
+          on:tap={handleSendSMS}
         >
           <image
             src="~/static/send-inverted.png"
@@ -87,6 +134,10 @@
 </page>
 
 <style>
+  .invert {
+    transform: rotate(180deg);
+  }
+
   .messages {
     padding: 15;
   }
@@ -103,6 +154,14 @@
     min-height: 0;
     padding: 0;
     margin: 0;
+  }
+
+  .sending {
+    color: blue;
+  }
+
+  .error {
+    color: red;
   }
 
   .message.mine {
