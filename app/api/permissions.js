@@ -37,3 +37,22 @@ export async function askSendSMSPermission() {
     1
   );
 }
+
+// ------------------------ RECEIVE SMS
+
+export function getReceiveSMSPermission() {
+  return (
+    androidx.core.content.PermissionChecker.checkSelfPermission(
+      Utils.android.getApplicationContext(),
+      android.Manifest.permission.RECEIVE_SMS
+    ) === android.content.pm.PackageManager.PERMISSION_GRANTED
+  );
+}
+
+export async function askReceiveSMSPermission() {
+  await androidx.core.app.ActivityCompat.requestPermissions(
+    Application.android.foregroundActivity,
+    [android.Manifest.permission.RECEIVE_SMS],
+    1
+  );
+}

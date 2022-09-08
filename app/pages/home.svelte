@@ -1,5 +1,4 @@
 <script>
-  import Contact from "./contact.svelte";
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
   import { navigate } from "svelte-native";
@@ -9,10 +8,13 @@
     askReadSMSPermission,
     getSendSMSPermission,
     askSendSMSPermission,
+    getReceiveSMSPermission,
+    askReceiveSMSPermission,
   } from "../api/permissions";
-  import { readInboxSMS } from "../api/read_sms";
   import * as app from "@nativescript/core/application";
   import ConversationsStore from "../stores/conversations";
+  import { Application } from "@nativescript/core";
+  import { receiveSMS } from "../api/receive_sms";
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
@@ -21,6 +23,7 @@
 
   let readSMSPermissionGranted = false;
   let sendSMSPermissionGranted = false;
+  let receiveSMSPermissionGranted = false;
 
   function infiniteGetReadSMSPermission() {
     if (!readSMSPermissionGranted) {
@@ -42,8 +45,18 @@
     }
   }
 
+  function infiniteGetReceiveSMSPermission() {
+    if (!receiveSMSPermissionGranted) {
+      receiveSMSPermissionGranted = getReceiveSMSPermission();
+      setTimeout(() => {
+        infiniteGetReceiveSMSPermission();
+      }, 100);
+    }
+  }
+
   infiniteGetReadSMSPermission();
   infiniteGetSendSMSPermission();
+  infiniteGetReceiveSMSPermission();
 
   setTimeout(() => {
     pageLoaded = true;
@@ -55,11 +68,19 @@
 
   refreshContacts();
   if (readSMSPermissionGranted) ConversationsStore.refresh(contentResolver);
+
+  // -------------------------------------------------- LISTEN INCOMING SMS
+  Application.android.registerBroadcastReceiver(
+    "android.provider.Telephony.SMS_RECEIVED",
+    (content, intent) => {
+      receiveSMS(content, intent);
+    }
+  );
 </script>
 
 <page>
   {#if pageLoaded}
-    {#if readSMSPermissionGranted && sendSMSPermissionGranted}
+    {#if readSMSPermissionGranted && sendSMSPermissionGranted && receiveSMSPermissionGranted}
       <actionBar title="My App">
         <AddContactActionItem />
       </actionBar>
@@ -99,8 +120,14 @@
         <label>sendSMSPermissionGranted: {sendSMSPermissionGranted}</label>
         <!-- svelte-ignore a11y-label-has-associated-control -->
         <label>readSMSPermissionGranted: {readSMSPermissionGranted}</label>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label>askReceiveSMSPermission: {receiveSMSPermissionGranted}</label>
         <button text="read SMS permissions" on:tap={askReadSMSPermission} />
         <button text="send SMS permissions" on:tap={askSendSMSPermission} />
+        <button
+          text="receive SMS permissions"
+          on:tap={askReceiveSMSPermission}
+        />
         <button
           text="updattte permission"
           on:tap={() => {

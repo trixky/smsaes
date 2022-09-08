@@ -5,7 +5,7 @@
   import sendSMS from "../telephony/send";
 
   export let contact;
-  let local_id = 0;
+  let local_send_id = 0;
 
   let sender_message = "";
   // let encryption_checked = false;
@@ -35,12 +35,12 @@
       },
     };
 
-    ConversationsStore.addSendedMessage(message);
+    ConversationsStore.addMessage(message);
 
     sendSMS(
       contact.phone_number,
       current_sender_message,
-      message.date.toString() + (++local_id).toString(),
+      message.date.toString() + (++local_send_id).toString(),
       (ok) => {
         ConversationsStore.updateSendedMessageIntent(message, {
           ended: true,

@@ -18,7 +18,7 @@ function createMessages() {
       });
       set(conversations);
     },
-    addSendedMessage: (message) => {
+    addMessage: (message) => {
       update((conversations) => {
         conversations[message.address].push(message);
         return conversations;
