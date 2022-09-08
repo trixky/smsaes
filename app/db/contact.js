@@ -1,7 +1,7 @@
 import sqlite from "nativescript-sqlite";
 import { initDB } from "./global";
 
-const db_name = "global2";
+const db_name = "global3";
 const contacts_table_name = "contacts";
 
 async function createTableIfNotExists(db) {
@@ -11,7 +11,7 @@ async function createTableIfNotExists(db) {
         contacts_table_name +
         " ( \
             contact_id INTEGER PRIMARY KEY, \
-            phone_number TEXT NOT NULL, \
+            phone_number TEXT NOT NULL UNIQUE, \
             firstname TEXT NOT NULL, \
             lastname TEXT, \
             email TEXT, \
@@ -56,6 +56,49 @@ export async function saveNewContact(contact) {
     return id;
   } catch (err) {
     console.log("error: db >", err);
+    if (err.message.includes("UNIQUE")) alert("Phone number already used");
+    else alert("An internal error occured");
+    return null;
+  }
+}
+
+// ---------------------------------- UPDATE
+
+async function update(db, contact) {
+  return new Promise((resolve, reject) => {
+    db.execSQL(
+      "UPDATE " +
+        contacts_table_name +
+        " SET " +
+        "phone_number = (?), firstname = (?), lastname = (?), email = (?), note = (?)" +
+        " WHERE " +
+        "phone_number = (?)",
+      [
+        [contact.phone_number],
+        [contact.firstname],
+        [contact.lastname],
+        [contact.email],
+        [contact.note],
+        [contact.phone_number],
+      ],
+      function (err, result) {
+        if (err != null) return reject(err);
+        resolve(result);
+      }
+    );
+  });
+}
+
+export async function updateContact(contact) {
+  const db = await initDB(db_name);
+  await createTableIfNotExists(db, contacts_table_name);
+
+  try {
+    const id = await update(db, contact);
+    return id;
+  } catch (err) {
+    console.log("error: db >", err);
+    alert("An internal error occured");
     return null;
   }
 }

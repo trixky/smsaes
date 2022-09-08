@@ -20,7 +20,9 @@ function createMessages() {
     },
     addMessage: (message) => {
       update((conversations) => {
-        conversations[message.address].push(message);
+        if (conversations[message.address] != undefined)
+          conversations[message.address].push(message);
+        else conversations[message.address] = [message];
         return conversations;
       });
     },
@@ -34,6 +36,13 @@ function createMessages() {
         ).local.intent = intent;
 
         return new_conversations;
+      });
+    },
+    addConversation: (address) => {
+      update((conversations) => {
+        if (conversations[message.address] != undefined)
+          conversations[address] = [];
+        return conversations;
       });
     },
     reset: () => set([]),

@@ -1,9 +1,8 @@
 <script>
   import Home from "../../pages/home.svelte";
   import { navigate } from "svelte-native";
-  import { saveNewContact } from "../../db/contact";
+  import { updateContact } from "../../db/contact";
   import * as inputChecker from "../../utils/input_checker";
-  import ConversationsStore from "../../stores/conversations";
 
   export let contact;
 
@@ -39,7 +38,7 @@
     if (temp_phone_number_error || temp_firstname_error) return;
 
     if (
-      (await saveNewContact({
+      (await updateContact({
         phone_number: contact.phone_number,
         firstname: contact.firstname,
         lastname: contact.lastname,

@@ -1,13 +1,14 @@
 <script>
-  import Contact from "../../pages/contact.svelte";
+  import NewContact from "../../pages/contact.svelte";
   import { navigate } from "svelte-native";
 
   export let contact;
+  export let not_editable = false;
 
   function toContact() {
     navigate({
-      props: { contact },
-      page: Contact,
+      props: { update_contact: contact, not_editable },
+      page: NewContact,
     });
   }
 </script>

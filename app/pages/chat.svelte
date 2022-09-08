@@ -13,41 +13,43 @@
   $: send_button_blocked = sender_message.length === 0;
 
   function handleSendSMS() {
-    const current_sender_message = sender_message;
-    sender_message = "";
+    if (sender_message.length > 0) {
+      const current_sender_message = sender_message;
+      sender_message = "";
 
-    const message = {
-      id: "local",
-      address: contact.phone_number, // phone number
-      from_me: true,
-      body: current_sender_message,
-      date: Date.now(),
-      date_sent: 0,
-      seen: true,
-      read: true,
-      deleted: false,
-      local: {
-        intent: {
-          ended: false,
-          error: false,
+      const message = {
+        id: "local",
+        address: contact.phone_number, // phone number
+        from_me: true,
+        body: current_sender_message,
+        date: Date.now(),
+        date_sent: 0,
+        seen: true,
+        read: true,
+        deleted: false,
+        local: {
+          intent: {
+            ended: false,
+            error: false,
+          },
+          delivery: undefined,
         },
-        delivery: undefined,
-      },
-    };
+      };
 
-    ConversationsStore.addMessage(message);
+      ConversationsStore.addMessage(message);
 
-    sendSMS(
-      contact.phone_number,
-      current_sender_message,
-      message.date.toString() + (++local_send_id).toString(),
-      (ok) => {
-        ConversationsStore.updateSendedMessageIntent(message, {
-          ended: true,
-          error: !ok,
-        });
-      }
-    );
+      sendSMS(
+        contact.phone_number,
+        current_sender_message,
+        message.date.toString() + (++local_send_id).toString(),
+        (ok) => {
+          ConversationsStore.updateSendedMessageIntent(message, {
+            ended: true,
+            error: !ok,
+          });
+        }
+      );
+    }
   }
 
   function localMessageIsSending(message) {
@@ -60,51 +62,64 @@
 </script>
 
 <page>
-  <actionBar
-    title={contact.firstname +
-      (contact.lastname.length > 0 ? " " + contact.lastname : "") +
-      " (" +
-      contact.phone_number +
-      ")"}
-  >
-    <DetailContactActionItem {contact} />
+  <actionBar>
+    <label horizontalAlignment="left"
+      >{contact.firstname +
+        (contact.lastname.length > 0 ? " " + contact.lastname : "") +
+        " (" +
+        contact.phone_number +
+        ")"}</label
+    >
+    <DetailContactActionItem {contact} not_editable={true} />
   </actionBar>
-  <gridlayout rows="auto, *, auto">
+  <gridlayout rows="*, auto">
     <!-- <stackLayout row="0">
       <switch
-        bind:checked={encryption_checked}
-        style="background-color: red;"
+      bind:checked={encryption_checked}
+      style="background-color: red;"
       />
     </stackLayout> -->
-    <scrollView row="1" class="invert">
-      <stackLayout class="messages invert">
-        {#if $ConversationsStore.hasOwnProperty(contact.phone_number)}
-          {#each $ConversationsStore[contact.phone_number] as message}
-            <stackLayout
-              class="message"
-              width="70%"
-              horizontalAlignment={message.from_me ? "right" : "left"}
-            >
-              <label
-                class="message-label"
+    <scrollView row="0" class="invert">
+      <gridLayout columns="*, auto" rows="auto">
+        <stackLayout row="0" />
+
+        <stackLayout
+          row="1"
+          class="messages invert"
+          style="margin-bottofm: {(5 -
+            ($ConversationsStore.hasOwnProperty(contact.phone_number)
+              ? $ConversationsStore[contact.phone_number].length
+              : 0)) *
+            10}asdf;"
+        >
+          {#if $ConversationsStore.hasOwnProperty(contact.phone_number)}
+            {#each $ConversationsStore[contact.phone_number] as message}
+              <stackLayout
+                class="message"
+                width="70%"
                 horizontalAlignment={message.from_me ? "right" : "left"}
-                >{timestampToString(message.date)}</label
               >
-              <textView
-                textWrap="true"
-                editable={false}
-                class:sending={localMessageIsSending(message)}
-                class:error={localMessageHadAnError(message)}
-                class="message-body"
-                style="text-align: {message.from_me ? 'right' : 'left'};"
-                >{message.body}
-              </textView>
-            </stackLayout>
-          {/each}
-        {/if}
-      </stackLayout>
+                <label
+                  class="message-label"
+                  horizontalAlignment={message.from_me ? "right" : "left"}
+                  >{timestampToString(message.date)}</label
+                >
+                <textView
+                  textWrap="true"
+                  editable={false}
+                  class:sending={localMessageIsSending(message)}
+                  class:error={localMessageHadAnError(message)}
+                  class="message-body"
+                  style="text-align: {message.from_me ? 'right' : 'left'};"
+                  >{message.body}
+                </textView>
+              </stackLayout>
+            {/each}
+          {/if}
+        </stackLayout>
+      </gridLayout>
     </scrollView>
-    <stackLayout class="sender" row="2">
+    <stackLayout class="sender" row="1">
       <gridLayout columns="*, auto" rows="auto">
         <textView
           height="auto"
