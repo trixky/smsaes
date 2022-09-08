@@ -137,3 +137,32 @@ export async function getContacts() {
     return [];
   }
 }
+
+// ---------------------------------- DELETE
+
+async function _delete(db, address) {
+  return new Promise((resolve, reject) => {
+    db.execSQL(
+      "DELETE FROM " + contacts_table_name + " WHERE " + "phone_number = (?);",
+      [address],
+      function (err, result) {
+        if (err != null) return reject(err);
+        resolve(result);
+      }
+    );
+  });
+}
+
+export async function deleteContact(address) {
+  const db = await initDB(db_name);
+  await createTableIfNotExists(db, contacts_table_name);
+
+  try {
+    const result = await _delete(db, address);
+    return result;
+  } catch (err) {
+    console.log("error: db >", err);
+    alert("An internal error occured");
+    return null;
+  }
+}

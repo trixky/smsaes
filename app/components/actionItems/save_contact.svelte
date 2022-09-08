@@ -3,7 +3,6 @@
   import { navigate } from "svelte-native";
   import { saveNewContact } from "../../db/contact";
   import * as inputChecker from "../../utils/input_checker";
-  import ConversationsStore from "../../stores/conversations";
 
   export let contact;
 

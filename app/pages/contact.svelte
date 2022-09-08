@@ -1,6 +1,7 @@
 <script lang="typescript">
   import SaveContactActionItem from "../components/actionItems/save_contact.svelte";
   import EditContactActionItem from "../components/actionItems/edit_contact.svelte";
+  import DeleteContactActionItem from "../components/actionItems/delete_contact.svelte";
   import UpdateContactActionItem from "../components/actionItems/update_contact.svelte";
   import * as inputChecker from "../utils/input_checker";
 
@@ -73,6 +74,7 @@
 <page>
   <actionBar title={mode === MODE_UPDATE ? "Update contact" : "New contact"}>
     {#if not_editable}
+      <DeleteContactActionItem {contact} />
       <EditContactActionItem {contact} />
     {:else if mode === MODE_NEW}
       <SaveContactActionItem
