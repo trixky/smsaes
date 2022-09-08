@@ -1,4 +1,5 @@
 <script lang="typescript">
+  import BlackHeaderStore from "../stores/black_header";
   import SaveContactActionItem from "../components/actionItems/save_contact.svelte";
   import EditContactActionItem from "../components/actionItems/edit_contact.svelte";
   import DeleteContactActionItem from "../components/actionItems/delete_contact.svelte";
@@ -72,7 +73,10 @@
 </script>
 
 <page>
-  <actionBar title={mode === MODE_UPDATE ? "Update contact" : "New contact"}>
+  <actionBar
+    title={mode === MODE_UPDATE ? "Update contact" : "New contact"}
+    class:black-header={$BlackHeaderStore}
+  >
     {#if not_editable}
       <DeleteContactActionItem {contact} />
       <EditContactActionItem {contact} />
@@ -161,6 +165,10 @@
 </page>
 
 <style>
+  .black-header {
+    background-color: black;
+  }
+
   .body {
     padding-top: 5;
   }

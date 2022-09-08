@@ -1,9 +1,10 @@
 <script lang="typescript">
+  import BlackHeaderStore from "../stores/black_header";
   let message: string = "Blank Svelte Native App";
 </script>
 
 <page>
-  <actionBar title="Svelte Native App" />
+  <actionBar title="Svelte Native App" class:black-header={$BlackHeaderStore} />
   <gridLayout>
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label
@@ -21,6 +22,10 @@
 </page>
 
 <style>
+  .black-header {
+    background-color: black;
+  }
+
   .info .fas {
     color: #3a53ff;
   }

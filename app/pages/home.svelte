@@ -1,6 +1,8 @@
 <script>
+  import BlackHeaderStore from "../stores/black_header";
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
+  import SettingsActionItem from "../components/actionItems/settings.svelte";
   import { navigate } from "svelte-native";
   import { getContacts } from "../db/contact";
   import {
@@ -81,8 +83,9 @@
 <page>
   {#if pageLoaded}
     {#if readSMSPermissionGranted && sendSMSPermissionGranted && receiveSMSPermissionGranted}
-      <actionBar title="My App">
+      <actionBar title="My App" class:black-header={$BlackHeaderStore}>
         <AddContactActionItem />
+        <SettingsActionItem />
       </actionBar>
       <scrollView orientation="vertical">
         <stackLayout>
@@ -147,6 +150,10 @@
 </page>
 
 <style>
+  .black-header {
+    background-color: black;
+  }
+
   .contact-button {
     text-align: left;
     background-color: var(--main-grey-10);

@@ -1,4 +1,5 @@
 <script lang="typescript">
+  import BlackHeaderStore from "../stores/black_header";
   import DetailContactActionItem from "../components/actionItems/detail_contact.svelte";
   import ConversationsStore from "../stores/conversations";
   import { timestampToString } from "../utils/date";
@@ -62,7 +63,7 @@
 </script>
 
 <page>
-  <actionBar>
+  <actionBar class:black-header={$BlackHeaderStore}>
     <label horizontalAlignment="left"
       >{contact.firstname +
         (contact.lastname.length > 0 ? " " + contact.lastname : "") +
@@ -149,6 +150,10 @@
 </page>
 
 <style>
+  .black-header {
+    background-color: black;
+  }
+
   .invert {
     transform: rotate(180deg);
   }
