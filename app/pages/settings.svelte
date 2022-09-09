@@ -1,20 +1,28 @@
 <script>
   import BlackHeaderStore from "../stores/black_header";
+
+  function handleHeaderBlackSwitch(event) {
+    if (event.value) BlackHeaderStore.set("black");
+    else BlackHeaderStore.reset();
+  }
+
+  $: black_header = $BlackHeaderStore === "black";
 </script>
 
 <page>
-  <actionBar title="Settings" class:black-header={$BlackHeaderStore} />
+  <actionBar title="Settings" class:black-header={black_header} />
   <scrollView>
     <stackLayout>
       <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label class="title">Informations</label>
+      <label class="title">Theme</label>
       <gridLayout columns="4*, *" rows="*" class="settings">
         <label column="0">Black Header</label>
         <switch
           class="switch"
           column="1"
           horizontalAlignment="center"
-          bind:checked={$BlackHeaderStore}
+          on:checkedChange={handleHeaderBlackSwitch}
+          checked={black_header}
         />
       </gridLayout>
     </stackLayout>

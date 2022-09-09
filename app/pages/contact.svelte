@@ -70,12 +70,14 @@
     email,
     note,
   };
+
+  $: black_header = $BlackHeaderStore === "black";
 </script>
 
 <page>
   <actionBar
     title={mode === MODE_UPDATE ? "Update contact" : "New contact"}
-    class:black-header={$BlackHeaderStore}
+    class:black-header={black_header}
   >
     {#if not_editable}
       <DeleteContactActionItem {contact} />

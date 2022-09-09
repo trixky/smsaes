@@ -1,5 +1,7 @@
 import sqlite from "nativescript-sqlite";
 
+export const db_name = "global3";
+
 export function existsAnOpen(db, db_name) {
   if (!sqlite.exists(db_name)) {
     console.log("error: db [" + db_name + "] doesn't exist");

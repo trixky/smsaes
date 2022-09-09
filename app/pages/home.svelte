@@ -27,6 +27,10 @@
   let sendSMSPermissionGranted = false;
   let receiveSMSPermissionGranted = false;
 
+  BlackHeaderStore.refresh();
+
+  $: black_header = $BlackHeaderStore === "black";
+
   function infiniteGetReadSMSPermission() {
     if (!readSMSPermissionGranted) {
       readSMSPermissionGranted = getReadSMSPermission();
@@ -83,7 +87,7 @@
 <page>
   {#if pageLoaded}
     {#if readSMSPermissionGranted && sendSMSPermissionGranted && receiveSMSPermissionGranted}
-      <actionBar title="My App" class:black-header={$BlackHeaderStore}>
+      <actionBar title="My App" class:black-header={black_header}>
         <AddContactActionItem />
         <SettingsActionItem />
       </actionBar>

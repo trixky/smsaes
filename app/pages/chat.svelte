@@ -13,6 +13,8 @@
 
   $: send_button_blocked = sender_message.length === 0;
 
+  $: black_header = $BlackHeaderStore === "black";
+
   function handleSendSMS() {
     if (sender_message.length > 0) {
       const current_sender_message = sender_message;
@@ -63,7 +65,7 @@
 </script>
 
 <page>
-  <actionBar class:black-header={$BlackHeaderStore}>
+  <actionBar class:black-header={black_header}>
     <label horizontalAlignment="left"
       >{contact.firstname +
         (contact.lastname.length > 0 ? " " + contact.lastname : "") +

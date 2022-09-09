@@ -10,6 +10,7 @@ of writing your own CSS rules. For a full list of class names in the theme
 refer to http://docs.nativescript.org/ui/theme. 
 The imported CSS rules must precede all other types of rules.
 */
+
 @import '~@nativescript/theme/css/core.css';
 @import '~@nativescript/theme/css/default.css';
 @import './font-awesome.css';
@@ -18,5 +19,6 @@ The imported CSS rules must precede all other types of rules.
     --main-blue-1: rgb(81, 172, 167);
     --main-grey-10: #222;
     --main-grey-12: #111;
+    --main-grey-5: #666;
     --main-grey-3: #aaa;
 }

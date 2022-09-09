@@ -1,7 +1,5 @@
-import sqlite from "nativescript-sqlite";
-import { initDB } from "./global";
+import { initDB, db_name } from "./global";
 
-const db_name = "global3";
 const contacts_table_name = "contacts";
 
 async function createTableIfNotExists(db) {
@@ -49,7 +47,7 @@ async function insert(db, contact) {
 
 export async function saveNewContact(contact) {
   const db = await initDB(db_name);
-  await createTableIfNotExists(db, contacts_table_name);
+  await createTableIfNotExists(db);
 
   try {
     const id = await insert(db, contact);
@@ -91,7 +89,7 @@ async function update(db, contact) {
 
 export async function updateContact(contact) {
   const db = await initDB(db_name);
-  await createTableIfNotExists(db, contacts_table_name);
+  await createTableIfNotExists(db);
 
   try {
     const id = await update(db, contact);
@@ -122,7 +120,7 @@ async function getAll(db) {
 export async function getContacts() {
   const db = await initDB(db_name);
 
-  await createTableIfNotExists(db, contacts_table_name);
+  await createTableIfNotExists(db);
 
   try {
     const contacts = await getAll(db);
@@ -155,7 +153,7 @@ async function _delete(db, address) {
 
 export async function deleteContact(address) {
   const db = await initDB(db_name);
-  await createTableIfNotExists(db, contacts_table_name);
+  await createTableIfNotExists(db);
 
   try {
     const result = await _delete(db, address);
