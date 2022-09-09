@@ -1,5 +1,6 @@
 <script>
   import BlackHeaderStore from "../stores/black_header";
+  import LocalesStore from "../stores/locales";
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
   import SettingsActionItem from "../components/actionItems/settings.svelte";
@@ -28,6 +29,7 @@
   let receiveSMSPermissionGranted = false;
 
   BlackHeaderStore.refresh();
+  LocalesStore.refresh();
 
   $: black_header = $BlackHeaderStore === "black";
 

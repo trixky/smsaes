@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { getHeader, setHeader } from "../db/theme";
+import { getHeader, setHeader } from "../db/settings";
 
 function createHeader() {
   const { subscribe, set } = writable("");
