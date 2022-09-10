@@ -18,6 +18,7 @@
   import ConversationsStore from "../stores/conversations";
   import { Application } from "@nativescript/core";
   import { receiveSMS } from "../api/receive_sms";
+  import keepDate from "../utils/keep_date";
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
@@ -84,6 +85,8 @@
       receiveSMS(content, intent);
     }
   );
+
+  keepDate();
 </script>
 
 <page>

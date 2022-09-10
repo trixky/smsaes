@@ -5,6 +5,7 @@ const settings_table_name = "settings";
 
 const TYPE_header = "header";
 const TYPE_locales = "locales";
+const TYPE_date = "date";
 
 async function createTableIfNotExists(db) {
   return new Promise((resolve) => {
@@ -54,10 +55,28 @@ async function addLocales(db, locale) {
   });
 }
 
+async function addDate(db) {
+  const date = Date.now().toString();
+
+  return new Promise((resolve) => {
+    db.execSQL(
+      "INSERT OR IGNORE INTO " +
+        settings_table_name +
+        " (type, value) values ((?), (?));",
+      [TYPE_date, date],
+      function (err, result) {
+        if (err != null) return reject(err);
+        resolve(result);
+      }
+    );
+  });
+}
+
 async function initTable(db) {
   await createTableIfNotExists(db);
   await addHeader(db, "");
   await addLocales(db, locales.EN);
+  // await addDate(db);
 }
 
 // ---------------------------------- SET
@@ -99,10 +118,25 @@ export async function setLocales(value) {
   await initTable(db);
 
   try {
-    const result = await set(db, value, TYPE_locales);
+    const result = await set(db, value, TYPE_date);
     return result;
   } catch (err) {
     console.log("error: db >", err);
+    alert("An internal error occured");
+    return null;
+  }
+}
+
+export async function setDate() {
+  const db = await initDB(db_name);
+  await initTable(db);
+
+  const timestamp = Date.now();
+
+  try {
+    const result = await set(db, timestamp.toString(), TYPE_date);
+    return result;
+  } catch (err) {
     alert("An internal error occured");
     return null;
   }
@@ -148,6 +182,20 @@ export async function getLocales() {
     return value[0];
   } catch (err) {
     console.log("error: db >", err);
+    alert("An internal error occured");
+    return null;
+  }
+}
+
+export async function getDate() {
+  const db = await initDB(db_name);
+  await initTable(db);
+
+  try {
+    const value = await get(db, TYPE_date);
+
+    return new Date(parseInt(value[0], 10));
+  } catch (err) {
     alert("An internal error occured");
     return null;
   }

@@ -13,7 +13,6 @@
   function handleHeaderLocalesSwitch(event, locale) {
     event.object = undefined;
 
-    console.log(event);
     switch (locale) {
       case locales.EN:
         if (event.value) LocalesStore.switchToEnglish();
