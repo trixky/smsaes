@@ -40,13 +40,13 @@
 
   $: black_header = $BlackHeaderStore === "black";
 
-  function infiniteGetReadSMSPermission() {
+  function infiniteGetReadSMSPermission(no_action = false) {
     if (!readSMSPermissionGranted) {
       readSMSPermissionGranted = getReadSMSPermission();
       setTimeout(() => {
         infiniteGetReadSMSPermission();
       }, 100);
-    } else {
+    } else if (!no_action) {
       ConversationsStore.init(contentResolver);
     }
   }
@@ -60,13 +60,13 @@
     }
   }
 
-  function infiniteGetReceiveSMSPermission() {
+  function infiniteGetReceiveSMSPermission(no_action = false) {
     if (!receiveSMSPermissionGranted) {
       receiveSMSPermissionGranted = getReceiveSMSPermission();
       setTimeout(() => {
         infiniteGetReceiveSMSPermission();
       }, 100);
-    } else {
+    } else if (!no_action) {
       // -------------------------------------------------- LISTEN INCOMING SMS
       Application.android.registerBroadcastReceiver(
         "android.provider.Telephony.SMS_RECEIVED",
@@ -83,13 +83,10 @@
 
   ContactsStore.getContacts();
 
-  if (!$LaunchedStore) {
-    LaunchedStore.launch();
-
-    infiniteGetReadSMSPermission();
-    infiniteGetSendSMSPermission();
-    infiniteGetReceiveSMSPermission();
-  }
+  infiniteGetReadSMSPermission($LaunchedStore);
+  infiniteGetSendSMSPermission();
+  infiniteGetReceiveSMSPermission($LaunchedStore);
+  LaunchedStore.launch();
 </script>
 
 <page>

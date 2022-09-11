@@ -73,7 +73,7 @@
     );
 
     if (check_contact === undefined) {
-      alert("The contact does not exist.").then(() => {
+      alert("The contact has been deleted.").then(() => {
         navigate({
           page: Home,
         });

@@ -35,9 +35,7 @@
       );
 
       if (check_contact === undefined) {
-        alert("The contact was recently deleted.").then(() => {
-          goBack();
-        });
+        goBack();
       } else {
         phone_number = check_contact.phone_number;
         firstname = check_contact.firstname;
