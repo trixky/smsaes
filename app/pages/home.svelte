@@ -100,7 +100,7 @@
     {/if}
   </actionBar>
   {#if pageLoaded}
-    {#if AllPermissionsGranted || $LaunchedStore}
+    {#if AllPermissionsGranted}
       <scrollView orientation="vertical">
         <stackLayout>
           <!-- svelte-ignore a11y-label-has-associated-control -->
