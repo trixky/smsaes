@@ -6,6 +6,24 @@ function createMessages() {
 
   return {
     subscribe,
+    init: (contentResolver) => {
+      update((conversations) => {
+        if (Object.keys(conversations).length === 0) {
+          const _conversations = {};
+          const messages = readInboxSMS(contentResolver);
+          messages.forEach((message) => {
+            const message_address = message.address;
+
+            if (!_conversations.hasOwnProperty(message_address))
+              _conversations[message_address] = [message];
+            else _conversations[message_address].push(message);
+          });
+          return _conversations;
+        }
+
+        return conversations;
+      });
+    },
     refresh: (contentResolver) => {
       const conversations = {};
       const messages = readInboxSMS(contentResolver);

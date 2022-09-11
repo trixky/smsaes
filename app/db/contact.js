@@ -55,7 +55,7 @@ export async function saveNewContact(contact) {
   } catch (err) {
     console.log("error: db >", err);
     if (err.message.includes("UNIQUE")) alert("Phone number already used");
-    else alert("An internal error occured");
+    else alert("An internal error occured #001");
     return null;
   }
 }
@@ -96,7 +96,7 @@ export async function updateContact(contact) {
     return id;
   } catch (err) {
     console.log("error: db >", err);
-    alert("An internal error occured");
+    alert("An internal error occured #002");
     return null;
   }
 }
@@ -159,8 +159,7 @@ export async function deleteContact(address) {
     const result = await _delete(db, address);
     return result;
   } catch (err) {
-    console.log("error: db >", err);
-    alert("An internal error occured");
+    alert("An internal error occured #003");
     return null;
   }
 }

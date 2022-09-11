@@ -1,8 +1,8 @@
 <script>
   import Home from "../../pages/home.svelte";
+  import ContactsStore from "../../stores/contacts";
   import { navigate } from "svelte-native";
   import { confirm } from "@nativescript/core/ui/dialogs";
-  import { deleteContact } from "../../db/contact";
 
   export let contact;
 
@@ -13,7 +13,7 @@
       okButtonText: "Confirm",
       cancelButtonText: "Cancel",
     }).then(async (confirm) => {
-      if (confirm && deleteContact(contact.phone_number))
+      if (confirm && ContactsStore.removeContact(contact.phone_number))
         navigate({
           page: Home,
         });

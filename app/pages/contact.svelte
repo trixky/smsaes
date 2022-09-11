@@ -1,10 +1,13 @@
-<script lang="typescript">
+<script>
+  import ContactsStore from "../stores/contacts";
   import BlackHeaderStore from "../stores/black_header";
   import SaveContactActionItem from "../components/actionItems/save_contact.svelte";
   import EditContactActionItem from "../components/actionItems/edit_contact.svelte";
   import DeleteContactActionItem from "../components/actionItems/delete_contact.svelte";
   import UpdateContactActionItem from "../components/actionItems/update_contact.svelte";
   import * as inputChecker from "../utils/input_checker";
+  import { alert } from "@nativescript/core/ui/dialogs";
+  import { goBack } from "svelte-native";
 
   const MODE_NEW = "new";
   const MODE_UPDATE = "update";
@@ -25,12 +28,24 @@
   let email = "";
   let note = "";
 
-  if (mode === MODE_UPDATE) {
-    phone_number = update_contact.phone_number;
-    firstname = update_contact.firstname;
-    lastname = update_contact.lastname;
-    email = update_contact.email;
-    note = update_contact.note;
+  function updateContact() {
+    if (mode === MODE_UPDATE) {
+      const check_contact = $ContactsStore.find(
+        (_contact) => _contact.phone_number === update_contact.phone_number
+      );
+
+      if (check_contact === undefined) {
+        alert("The contact was recently deleted.").then(() => {
+          goBack();
+        });
+      } else {
+        phone_number = check_contact.phone_number;
+        firstname = check_contact.firstname;
+        lastname = check_contact.lastname;
+        email = check_contact.email;
+        note = check_contact.note;
+      }
+    }
   }
 
   let phone_number_error = false;
@@ -72,9 +87,14 @@
   };
 
   $: black_header = $BlackHeaderStore === "black";
+
+  updateContact();
+  function handleNavigatedTo() {
+    updateContact();
+  }
 </script>
 
-<page>
+<page on:navigatedTo={handleNavigatedTo}>
   <actionBar
     title={mode === MODE_UPDATE ? "Update contact" : "New contact"}
     class:black-header={black_header}

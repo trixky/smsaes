@@ -1,9 +1,13 @@
 <script lang="typescript">
+  import ContactsStore from "../stores/contacts";
   import BlackHeaderStore from "../stores/black_header";
   import DetailContactActionItem from "../components/actionItems/detail_contact.svelte";
   import ConversationsStore from "../stores/conversations";
   import { timestampToString } from "../utils/date";
   import sendSMS from "../telephony/send";
+  import { alert } from "@nativescript/core/ui/dialogs";
+  import { navigate } from "svelte-native";
+  import Home from "../pages/home.svelte";
 
   export let contact;
   let local_send_id = 0;
@@ -62,9 +66,25 @@
   function localMessageHadAnError(message) {
     return message.local?.intent.error === true;
   }
+
+  function checkIfContactExists() {
+    const check_contact = $ContactsStore.find(
+      (_contact) => _contact.phone_number === contact.phone_number
+    );
+
+    if (check_contact === undefined) {
+      alert("The contact does not exist.").then(() => {
+        navigate({
+          page: Home,
+        });
+      });
+    }
+  }
+
+  checkIfContactExists();
 </script>
 
-<page>
+<page on:navigatedTo={checkIfContactExists}>
   <actionBar class:black-header={black_header}>
     <label horizontalAlignment="left"
       >{contact.firstname +

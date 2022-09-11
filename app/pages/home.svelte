@@ -1,11 +1,12 @@
 <script>
   import BlackHeaderStore from "../stores/black_header";
   import LocalesStore from "../stores/locales";
+  import ContactsStore from "../stores/contacts";
+  import LaunchedStore from "../stores/lauched";
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
   import SettingsActionItem from "../components/actionItems/settings.svelte";
   import { navigate } from "svelte-native";
-  import { getContacts } from "../db/contact";
   import {
     getReadSMSPermission,
     askReadSMSPermission,
@@ -18,16 +19,21 @@
   import ConversationsStore from "../stores/conversations";
   import { Application } from "@nativescript/core";
   import { receiveSMS } from "../api/receive_sms";
-  import keepDate from "../utils/keep_date";
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
-  let contacts = [];
   let pageLoaded = false;
 
   let readSMSPermissionGranted = false;
   let sendSMSPermissionGranted = false;
   let receiveSMSPermissionGranted = false;
+
+  let AllPermissionsGranted = false;
+
+  $: AllPermissionsGranted =
+    readSMSPermissionGranted &&
+    sendSMSPermissionGranted &&
+    receiveSMSPermissionGranted;
 
   BlackHeaderStore.refresh();
   LocalesStore.refresh();
@@ -41,7 +47,7 @@
         infiniteGetReadSMSPermission();
       }, 100);
     } else {
-      ConversationsStore.refresh(contentResolver);
+      ConversationsStore.init(contentResolver);
     }
   }
 
@@ -60,42 +66,41 @@
       setTimeout(() => {
         infiniteGetReceiveSMSPermission();
       }, 100);
+    } else {
+      // -------------------------------------------------- LISTEN INCOMING SMS
+      Application.android.registerBroadcastReceiver(
+        "android.provider.Telephony.SMS_RECEIVED",
+        (content, intent) => {
+          receiveSMS(content, intent);
+        }
+      );
     }
   }
-
-  infiniteGetReadSMSPermission();
-  infiniteGetSendSMSPermission();
-  infiniteGetReceiveSMSPermission();
 
   setTimeout(() => {
     pageLoaded = true;
   }, 1000);
 
-  async function refreshContacts() {
-    contacts = await getContacts();
+  ContactsStore.getContacts();
+
+  if (!$LaunchedStore) {
+    LaunchedStore.launch();
+
+    infiniteGetReadSMSPermission();
+    infiniteGetSendSMSPermission();
+    infiniteGetReceiveSMSPermission();
   }
-
-  refreshContacts();
-  if (readSMSPermissionGranted) ConversationsStore.refresh(contentResolver);
-
-  // -------------------------------------------------- LISTEN INCOMING SMS
-  Application.android.registerBroadcastReceiver(
-    "android.provider.Telephony.SMS_RECEIVED",
-    (content, intent) => {
-      receiveSMS(content, intent);
-    }
-  );
-
-  keepDate();
 </script>
 
 <page>
+  <actionBar title="My App" class:black-header={black_header}>
+    {#if pageLoaded}
+      <AddContactActionItem />
+      <SettingsActionItem />
+    {/if}
+  </actionBar>
   {#if pageLoaded}
-    {#if readSMSPermissionGranted && sendSMSPermissionGranted && receiveSMSPermissionGranted}
-      <actionBar title="My App" class:black-header={black_header}>
-        <AddContactActionItem />
-        <SettingsActionItem />
-      </actionBar>
+    {#if AllPermissionsGranted || $LaunchedStore}
       <scrollView orientation="vertical">
         <stackLayout>
           <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -106,7 +111,7 @@
               final = readInboxSMS(contentResolver);
             }}
           /> -->
-          {#each contacts as contact}
+          {#each $ContactsStore as contact}
             <button
               class="contact-button"
               on:tap={() =>
@@ -149,12 +154,7 @@
       </stackLayout>
     {/if}
   {:else}
-    <gridLayout>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label horizontalAlignment="center" verticalAlignment="middle"
-        >loading...</label
-      >
-    </gridLayout>
+    <activityIndicator busy={true} />
   {/if}
 </page>
 

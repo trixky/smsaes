@@ -76,7 +76,7 @@ async function initTable(db) {
   await createTableIfNotExists(db);
   await addHeader(db, "");
   await addLocales(db, locales.EN);
-  // await addDate(db);
+  await addDate(db);
 }
 
 // ---------------------------------- SET
@@ -108,7 +108,7 @@ export async function setHeader(value) {
     return result;
   } catch (err) {
     console.log("error: db >", err);
-    alert("An internal error occured");
+    alert("An internal error occured #004");
     return null;
   }
 }
@@ -122,7 +122,7 @@ export async function setLocales(value) {
     return result;
   } catch (err) {
     console.log("error: db >", err);
-    alert("An internal error occured");
+    alert("An internal error occured #005");
     return null;
   }
 }
@@ -137,7 +137,7 @@ export async function setDate() {
     const result = await set(db, timestamp.toString(), TYPE_date);
     return result;
   } catch (err) {
-    alert("An internal error occured");
+    alert("An internal error occured #006");
     return null;
   }
 }
@@ -167,7 +167,7 @@ export async function getHeader() {
     return value[0];
   } catch (err) {
     console.log("error: db >", err);
-    alert("An internal error occured");
+    alert("An internal error occured #007");
     return null;
   }
 }
@@ -182,7 +182,7 @@ export async function getLocales() {
     return value[0];
   } catch (err) {
     console.log("error: db >", err);
-    alert("An internal error occured");
+    alert("An internal error occured #008");
     return null;
   }
 }
@@ -196,7 +196,7 @@ export async function getDate() {
 
     return new Date(parseInt(value[0], 10));
   } catch (err) {
-    alert("An internal error occured");
+    alert("An internal error occured #009");
     return null;
   }
 }

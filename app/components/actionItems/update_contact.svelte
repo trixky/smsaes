@@ -1,7 +1,6 @@
 <script>
-  import Home from "../../pages/home.svelte";
-  import { navigate } from "svelte-native";
-  import { updateContact } from "../../db/contact";
+  import { goBack } from "svelte-native";
+  import ContactsStore from "../../stores/contacts";
   import * as inputChecker from "../../utils/input_checker";
 
   export let contact;
@@ -38,7 +37,7 @@
     if (temp_phone_number_error || temp_firstname_error) return;
 
     if (
-      (await updateContact({
+      (await ContactsStore.updateContact({
         phone_number: contact.phone_number,
         firstname: contact.firstname,
         lastname: contact.lastname,
@@ -46,9 +45,7 @@
         note: contact.note,
       })) != null
     )
-      navigate({
-        page: Home,
-      });
+      goBack();
   }
 </script>
 
