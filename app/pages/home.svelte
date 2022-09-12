@@ -44,11 +44,19 @@
 
   $: black_header = $BlackHeaderStore === "black";
 
+  function infiniteGetContacts(no_action = false) {
+    ContactsStore.getContacts();
+    if (!no_action)
+      setTimeout(() => {
+        infiniteGetContacts(no_action);
+      }, 500);
+  }
+
   function infiniteGetReadSMSPermission(no_action = false) {
     if (!readSMSPermissionGranted) {
       readSMSPermissionGranted = getReadSMSPermission();
       setTimeout(() => {
-        infiniteGetReadSMSPermission();
+        infiniteGetReadSMSPermission(no_action);
       }, 100);
     } else if (!no_action) {
       ConversationsStore.init(contentResolver);
@@ -68,7 +76,7 @@
     if (!receiveSMSPermissionGranted) {
       receiveSMSPermissionGranted = getReceiveSMSPermission();
       setTimeout(() => {
-        infiniteGetReceiveSMSPermission();
+        infiniteGetReceiveSMSPermission(no_action);
       }, 100);
     } else if (!no_action) {
       // -------------------------------------------------- LISTEN INCOMING SMS
@@ -109,8 +117,6 @@
     pageLoaded = true;
   }, 1000);
 
-  ContactsStore.getContacts();
-
   let sorted_contacts = [];
   $: sorted_contacts = $ContactsStore.sort((a, b) => {
     const last_a_message_date = getLastMessageDate(a);
@@ -121,9 +127,12 @@
     return last_a_message_date > last_b_message_date ? -1 : 1;
   });
 
+  infiniteGetContacts($LaunchedStore);
+
   infiniteGetReadSMSPermission($LaunchedStore);
   infiniteGetSendSMSPermission();
   infiniteGetReceiveSMSPermission($LaunchedStore);
+
   $: !$KeepDateStore && AllPermissionsGranted ? KeepDateStore.launch() : "";
   LaunchedStore.launch();
 </script>
