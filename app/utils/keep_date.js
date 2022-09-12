@@ -17,9 +17,7 @@ function listenClose() {
 
 export default function keepDate() {
   // ------------------------------- open
-  Application.on(Application.launchEvent, () => {
-    listenOpen();
-  });
+  // Application.launchEvent //
 
   Application.on(Application.resumeEvent, () => {
     listenOpen();

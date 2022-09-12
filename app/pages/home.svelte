@@ -3,6 +3,8 @@
   import LocalesStore from "../stores/locales";
   import ContactsStore from "../stores/contacts";
   import LaunchedStore from "../stores/lauched";
+  import KeepDateStore from "../stores/keep_date";
+
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
   import SettingsActionItem from "../components/actionItems/settings.svelte";
@@ -19,7 +21,6 @@
   import ConversationsStore from "../stores/conversations";
   import { Application } from "@nativescript/core";
   import { receiveSMS } from "../api/receive_sms";
-  import keepDate from "../utils/keep_date";
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
@@ -87,12 +88,15 @@
   infiniteGetReadSMSPermission($LaunchedStore);
   infiniteGetSendSMSPermission();
   infiniteGetReceiveSMSPermission($LaunchedStore);
-  if (!$LaunchedStore) keepDate();
+  $: !$KeepDateStore && AllPermissionsGranted ? KeepDateStore.launch() : "";
   LaunchedStore.launch();
 </script>
 
 <page>
-  <actionBar title="My App" class:black-header={black_header}>
+  <actionBar
+    title={AllPermissionsGranted ? "Contacts" : "Permissions"}
+    class:black-header={black_header}
+  >
     {#if pageLoaded}
       <AddContactActionItem />
       <SettingsActionItem />
@@ -131,24 +135,28 @@
         </stackLayout>
       </scrollView>
     {:else}
-      <stackLayout>
+      <stackLayout class="permission-container">
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label>sendSMSPermissionGranted: {sendSMSPermissionGranted}</label>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label>readSMSPermissionGranted: {readSMSPermissionGranted}</label>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label>askReceiveSMSPermission: {receiveSMSPermissionGranted}</label>
-        <button text="read SMS permissions" on:tap={askReadSMSPermission} />
-        <button text="send SMS permissions" on:tap={askSendSMSPermission} />
+        <label horizontalAlignment="center" class="permission-demand"
+          >{$LocalesStore.permissions.demand}</label
+        >
         <button
-          text="receive SMS permissions"
-          on:tap={askReceiveSMSPermission}
+          text={$LocalesStore.permissions.smsReadingButton}
+          on:tap={askReadSMSPermission}
+          class="button-permission"
+          class:granted-permission={readSMSPermissionGranted}
         />
         <button
-          text="updattte permission"
-          on:tap={() => {
-            readSMSPermissionGranted = getReadSMSPermission();
-          }}
+          text={$LocalesStore.permissions.smsSendingButton}
+          on:tap={askSendSMSPermission}
+          class="button-permission"
+          class:granted-permission={sendSMSPermissionGranted}
+        />
+        <button
+          text={$LocalesStore.permissions.smsReceivingButton}
+          on:tap={askReceiveSMSPermission}
+          class="button-permission"
+          class:granted-permission={receiveSMSPermissionGranted}
         />
       </stackLayout>
     {/if}
@@ -170,5 +178,22 @@
 
   .lastname {
     color: var(--main-grey-3);
+  }
+
+  .permission-container {
+    padding: 15;
+  }
+
+  .permission-demand {
+    margin: 10 0;
+  }
+
+  .button-permission {
+    background-color: var(--main-grey-10);
+  }
+
+  .granted-permission {
+    background-color: green;
+    text-decoration: line-through;
   }
 </style>
