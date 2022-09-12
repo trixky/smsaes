@@ -1,7 +1,7 @@
 function dateFirstPartToString(date: Date) {
   const year = date.getFullYear().toString();
   const month = date.getMonth().toString().padStart(2, "0");
-  const day = date.getDay().toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
 
   return `${year}/${month}/${day}`;
 }
