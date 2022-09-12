@@ -4,6 +4,7 @@
   import ContactsStore from "../stores/contacts";
   import LaunchedStore from "../stores/lauched";
   import KeepDateStore from "../stores/keep_date";
+  import { timestampIsItTodayToString } from "../utils/date";
 
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
@@ -25,6 +26,7 @@
   const contentResolver = app.android.nativeApp.getContentResolver();
 
   let pageLoaded = false;
+  let chatLoaded = true;
 
   let readSMSPermissionGranted = false;
   let sendSMSPermissionGranted = false;
@@ -79,11 +81,45 @@
     }
   }
 
+  function getLastMessage(contact) {
+    return $ConversationsStore.hasOwnProperty(contact.phone_number)
+      ? $ConversationsStore[contact.phone_number][
+          $ConversationsStore[contact.phone_number].length - 1
+        ].body
+      : "";
+  }
+
+  function getLastMessageDate(contact) {
+    return $ConversationsStore.hasOwnProperty(contact.phone_number)
+      ? $ConversationsStore[contact.phone_number][
+          $ConversationsStore[contact.phone_number].length - 1
+        ].date
+      : null;
+  }
+
+  function getLastMessageDateString(contact) {
+    const last_message_date = getLastMessageDate(contact);
+
+    return last_message_date === null
+      ? ""
+      : timestampIsItTodayToString(last_message_date);
+  }
+
   setTimeout(() => {
     pageLoaded = true;
   }, 1000);
 
   ContactsStore.getContacts();
+
+  let sorted_contacts = [];
+  $: sorted_contacts = $ContactsStore.sort((a, b) => {
+    const last_a_message_date = getLastMessageDate(a);
+    const last_b_message_date = getLastMessageDate(b);
+
+    if (last_a_message_date === null && last_b_message_date != null) return 1;
+    if (last_b_message_date === null && last_a_message_date != null) return -1;
+    return last_a_message_date > last_b_message_date ? -1 : 1;
+  });
 
   infiniteGetReadSMSPermission($LaunchedStore);
   infiniteGetSendSMSPermission();
@@ -94,7 +130,11 @@
 
 <page>
   <actionBar
-    title={AllPermissionsGranted ? "Contacts" : "Permissions"}
+    title={AllPermissionsGranted
+      ? chatLoaded
+        ? "Contacts"
+        : "Load messages"
+      : "Permissions"}
     class:black-header={black_header}
   >
     {#if pageLoaded}
@@ -102,7 +142,7 @@
       <SettingsActionItem />
     {/if}
   </actionBar>
-  {#if pageLoaded}
+  {#if pageLoaded && chatLoaded}
     {#if AllPermissionsGranted}
       <scrollView orientation="vertical">
         <stackLayout>
@@ -114,23 +154,41 @@
               final = readInboxSMS(contentResolver);
             }}
           /> -->
-          {#each $ContactsStore as contact}
-            <button
-              class="contact-button"
-              on:tap={() =>
+          {#each sorted_contacts as contact}
+            <stackLayout
+              class="contact"
+              on:tap={() => {
+                chatLoaded = false;
                 navigate({
                   page: Chat,
                   props: { contact },
-                })}
+                });
+                setTimeout(() => {
+                  setTimeout(() => {
+                    chatLoaded = true;
+                  }, 200);
+                }, 50);
+              }}
             >
-              <formattedString>
-                <span text={contact.firstname} />
-                {#if contact.lastname.length > 0}
-                  <span class="lastname" text={" " + contact.lastname} />
-                {/if}
-                <span text={" (" + contact.phone_number + ")"} />
-              </formattedString>
-            </button>
+              <gridLayout columns="2*, *" rows="auto">
+                <label column="0" horizontalAlignment="left">
+                  <formattedString>
+                    <span text={contact.firstname} />
+                    {#if contact.lastname.length > 0}
+                      <span text={" " + contact.lastname} />
+                    {/if}
+                    <span text={" (" + contact.phone_number + ")"} />
+                  </formattedString>
+                </label>
+                <label
+                  column="1"
+                  horizontalAlignment="right"
+                  class="last-message-date"
+                  >{getLastMessageDateString(contact)}</label
+                >
+              </gridLayout>
+              <label class="last-message">{getLastMessage(contact)}</label>
+            </stackLayout>
           {/each}
         </stackLayout>
       </scrollView>
@@ -170,13 +228,19 @@
     background-color: black;
   }
 
-  .contact-button {
+  .contact {
     text-align: left;
     background-color: var(--main-grey-10);
-    padding: 0 15;
+    padding: 10 15;
+    margin: 10 15;
   }
 
-  .lastname {
+  .last-message {
+    color: var(--main-grey-3);
+    font-style: italic;
+  }
+
+  .last-message-date {
     color: var(--main-grey-3);
   }
 
