@@ -123,7 +123,7 @@
 </script>
 
 <page on:navigatedTo={checkIfContactExists}>
-  <actionBar class:black-header={black_header}>
+  <actionBar class:gold-header={black_header}>
     <label horizontalAlignment="left"
       >{contact.firstname +
         (contact.lastname.length > 0 ? " " + contact.lastname : "") +
@@ -182,7 +182,7 @@
         </stackLayout>
       </gridLayout>
     </scrollView>
-    <stackLayout class="sender" row="1">
+    <stackLayout row="1">
       <gridLayout columns="*, auto" rows="auto">
         <textView
           height="auto"
@@ -213,8 +213,10 @@
 </page>
 
 <style>
-  .black-header {
-    background-color: black;
+  .gold-header,
+  .gold-header > Label {
+    background-color: rgb(255, 245, 99);
+    color: black;
   }
 
   .invert {
@@ -227,7 +229,6 @@
 
   .message {
     margin-bottom: 8;
-    background-color: aquamarine;
   }
 
   .message-label {
@@ -238,6 +239,11 @@
     min-height: 0;
     padding: 0;
     margin: 0;
+    border-bottom-color: yellow;
+  }
+
+  .message-body:focus {
+    border-bottom-color: red;
   }
 
   .sending {
@@ -250,10 +256,6 @@
 
   .message.mine {
     text-align: right;
-  }
-
-  .sender {
-    background-color: var(--main-grey-10);
   }
 
   .input-field {

@@ -13,13 +13,76 @@ The imported CSS rules must precede all other types of rules.
 
 @import '~@nativescript/theme/css/core.css';
 @import '~@nativescript/theme/css/default.css';
-@import './font-awesome.css';
 
 * {
     --main-blue-0: rgb(165, 255, 251);
     --main-blue-1: rgb(81, 172, 167);
+    --main-grey-9: #333;
     --main-grey-10: #222;
     --main-grey-12: #111;
+    --main-grey-max: #161616;
     --main-grey-5: #666;
     --main-grey-3: #aaa;
+    font-size:12;
+}
+
+Page, Frame, Frame,.nt-frame,
+.ns-dark Page, .ns-dark Frame, .ns-dark Frame, .ns-dark .nt-frame
+{
+    background-color: black;
+}
+
+ActionBar, ActionBar.ns-android, ActionBar.ns-dark ActionBar.nt-action-bar, .nt-action-bar, .nt-action-bar.ns-dark,.nt-drawer.ns-dark .nt-drawer__header  {
+    background-color: black;
+    color: white;
+}
+
+StackLayout, StackLayout.ns-android, StackLayout.ns-dark {
+    background-color: black;
+    color: white;
+}
+
+TextField, .ns-dark TextField {
+    margin: 0 15;
+    border-color: var(--main-grey-5);
+    border-bottom-width: 1;
+}
+
+TextField:focus, .ns-dark TextField:focus {
+    border-bottom-width: 1;
+    border-color: var(--main-grey-5);
+}
+
+TextView, .ns-dark TextView {
+    color: white;
+    border-bottom-width: 0;
+}
+
+TextView:focus, .ns-dark TextView:focus {
+    border-bottom-width: 0;
+}
+
+.ns-android Switch, .ns-android .nt-switch {
+    background-color: white;
+    off-background-color: var(--main-grey-5);
+    color: rgb(160, 160, 160);
+}
+
+.ns-android Switch[checked=true], .ns-android .nt-switch[checked=true],
+.ns-android .ns-dark Switch[checked=true], .ns-android .ns-dark .nt-switch[checked=true] {
+
+    color: rgb(255, 255, 255);
+}
+
+ActivityIndicator, .ns-dark ActivityIndicator {
+    width: 40;
+    max-width: 40;
+    height: 40;
+    max-height: 40;
+    color: white;
+}
+
+Label, ActionBar > Label, StackLayout > Label, GridLayout > TextView, TextView, TextField {
+    color: white;
+    placeholder-color: var(--main-grey-5);
 }

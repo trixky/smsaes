@@ -117,7 +117,7 @@
 <page on:navigatedTo={handleNavigatedTo}>
   <actionBar
     title={mode === MODE_UPDATE ? "Update contact" : "New contact"}
-    class:black-header={black_header}
+    class:gold-header={black_header}
   >
     {#if not_editable}
       <DeleteContactActionItem {contact} />
@@ -234,8 +234,9 @@
 </page>
 
 <style>
-  .black-header {
-    background-color: black;
+  .gold-header {
+    background-color: rgb(255, 245, 99);
+    color: black;
   }
 
   .body {
@@ -274,7 +275,7 @@
   }
 
   .asterisk {
-    color: var(--main-blue-1);
+    color: var(--main-grey-3);
   }
 
   .encryption-switch {

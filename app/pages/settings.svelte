@@ -29,7 +29,7 @@
 <page>
   <actionBar
     title={$LocalesStore.settings.actionBar}
-    class:black-header={black_header}
+    class:gold-header={black_header}
   />
   <scrollView>
     <stackLayout>
@@ -82,8 +82,9 @@
 </page>
 
 <style>
-  .black-header {
-    background-color: black;
+  .gold-header {
+    background-color: rgb(255, 245, 99);
+    color: black;
   }
 
   .title {

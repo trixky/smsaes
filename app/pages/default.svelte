@@ -6,7 +6,7 @@
 </script>
 
 <page>
-  <actionBar title="Svelte Native App" class:black-header={black_header} />
+  <actionBar title="Svelte Native App" class:gold-header={black_header} />
   <gridLayout>
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label
@@ -24,8 +24,9 @@
 </page>
 
 <style>
-  .black-header {
-    background-color: black;
+  .gold-header {
+    background-color: rgb(255, 245, 99);
+    color: black;
   }
 
   .info .fas {

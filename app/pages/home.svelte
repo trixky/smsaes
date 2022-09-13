@@ -140,7 +140,7 @@
 <page>
   <actionBar
     title={AllPermissionsGranted ? "Contacts" : "Permissions"}
-    class:black-header={black_header}
+    class:gold-header={black_header}
   >
     {#if pageLoaded}
       <AddContactActionItem />
@@ -150,7 +150,7 @@
   {#if pageLoaded && chatLoaded}
     {#if AllPermissionsGranted}
       <scrollView orientation="vertical">
-        <stackLayout>
+        <stackLayout class="messages">
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <!-- <label>{final}</label> -->
           <!-- <button
@@ -229,18 +229,25 @@
 </page>
 
 <style>
-  .black-header {
-    background-color: black;
+  .gold-header {
+    background-color: rgb(255, 245, 99);
+    color: black;
+  }
+
+  .messages {
+    padding: 10 0;
   }
 
   .contact {
     text-align: left;
-    background-color: var(--main-grey-10);
+    border-left-width: 2;
+    border-color: var(--main-grey-10);
     padding: 10 15;
     margin: 10 15;
   }
 
   .last-message {
+    margin-top: 4;
     color: var(--main-grey-3);
     font-style: italic;
   }
