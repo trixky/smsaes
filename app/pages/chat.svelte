@@ -182,7 +182,7 @@
                 >
                   <formattedString>
                     {#if isAesMessage(message.body)}
-                      <span class="aes-header">{Config.aes.header}</span>
+                      <span class="aes-label">{Config.aes.header}</span>
                     {/if}
                     <span>{decryptAesMessage(message.body)}</span>
                   </formattedString>
@@ -254,16 +254,12 @@
     border-bottom-color: yellow;
   }
 
-  .message-body:focus {
-    border-bottom-color: red;
-  }
-
   .sending {
-    color: blue;
+    color: var(--main-grey-7);
   }
 
   .error {
-    color: red;
+    color: var(--main-red-5);
   }
 
   .message.mine {
@@ -293,7 +289,7 @@
     opacity: 0.2;
   }
 
-  .aes-header {
+  .aes-label {
     color: var(--main-blue-0);
     font-style: italic;
   }

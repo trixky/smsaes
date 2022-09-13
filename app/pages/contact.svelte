@@ -258,7 +258,7 @@
   }
 
   .input-field.error {
-    border-color: rgb(205, 99, 99);
+    border-color: var(--main-red-5);
   }
 
   .input-field.not-editable {
