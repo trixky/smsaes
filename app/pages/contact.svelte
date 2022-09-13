@@ -263,7 +263,6 @@
 
   .input-field.not-editable {
     opacity: 0.4;
-    /* border-width: 0; */
     border-color: transparent;
   }
 

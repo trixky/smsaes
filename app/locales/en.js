@@ -2,6 +2,9 @@ import locales from "./global";
 
 export default {
   is: locales.EN,
+  contacts: {
+    noContacts: "No contacts",
+  },
   settings: {
     actionBar: "Settings",
   },

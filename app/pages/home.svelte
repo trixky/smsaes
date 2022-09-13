@@ -177,54 +177,60 @@
               final = readInboxSMS(contentResolver);
             }}
           /> -->
-          {#each sorted_contacts as contact}
-            <stackLayout
-              class="contact"
-              on:tap={() => {
-                chatLoaded = false;
-                navigate({
-                  page: Chat,
-                  props: { contact },
-                });
-                setTimeout(() => {
+          {#if sorted_contacts.length > 0}
+            {#each sorted_contacts as contact}
+              <stackLayout
+                class="contact"
+                on:tap={() => {
+                  chatLoaded = false;
+                  navigate({
+                    page: Chat,
+                    props: { contact },
+                  });
                   setTimeout(() => {
-                    chatLoaded = true;
-                  }, 200);
-                }, 50);
-              }}
-            >
-              <gridLayout columns="2*, *" rows="auto">
-                <label column="0" horizontalAlignment="left">
+                    setTimeout(() => {
+                      chatLoaded = true;
+                    }, 200);
+                  }, 50);
+                }}
+              >
+                <gridLayout columns="2*, *" rows="auto">
+                  <label column="0" horizontalAlignment="left">
+                    <formattedString>
+                      <span text={contact.firstname} />
+                      {#if contact.lastname.length > 0}
+                        <span text={" " + contact.lastname} />
+                      {/if}
+                      <span text={" (" + contact.phone_number + ")"} />
+                    </formattedString>
+                  </label>
+                  <label
+                    column="1"
+                    horizontalAlignment="right"
+                    class="last-message-date"
+                    >{getLastMessageDateString(contact)}</label
+                  >
+                </gridLayout>
+                <label class="last-message">
                   <formattedString>
-                    <span text={contact.firstname} />
-                    {#if contact.lastname.length > 0}
-                      <span text={" " + contact.lastname} />
+                    {#if isAesMessage(getLastMessage(contact))}
+                      <span class="aes-header">{Config.aes.header}</span>
                     {/if}
-                    <span text={" (" + contact.phone_number + ")"} />
+                    <span
+                      >{decryptAesMessage(
+                        getLastMessage(contact),
+                        contact.aes_key
+                      )}</span
+                    >
                   </formattedString>
                 </label>
-                <label
-                  column="1"
-                  horizontalAlignment="right"
-                  class="last-message-date"
-                  >{getLastMessageDateString(contact)}</label
-                >
-              </gridLayout>
-              <label class="last-message">
-                <formattedString>
-                  {#if isAesMessage(getLastMessage(contact))}
-                    <span class="aes-header">{Config.aes.header}</span>
-                  {/if}
-                  <span
-                    >{decryptAesMessage(
-                      getLastMessage(contact),
-                      contact.aes_key
-                    )}</span
-                  >
-                </formattedString>
-              </label>
-            </stackLayout>
-          {/each}
+              </stackLayout>
+            {/each}
+          {:else}
+            <label class="no-contact" horizontalAlignment={"center"}
+              >{$LocalesStore.contacts.noContacts}</label
+            >
+          {/if}
         </stackLayout>
       </scrollView>
     {:else}
@@ -309,5 +315,10 @@
   .granted-permission {
     background-color: green;
     text-decoration: line-through;
+  }
+
+  .no-contact {
+    margin-top: 30;
+    color: var(--main-grey-5);
   }
 </style>
