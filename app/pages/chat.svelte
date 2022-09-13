@@ -9,6 +9,8 @@
   import { navigate } from "svelte-native";
   import Home from "../pages/home.svelte";
   import { encryptMessage, decryptMessage } from "../utils/aes";
+  import { confirm } from "@nativescript/core/ui/dialogs";
+  import LocalesStore from "../stores/locales";
 
   export let contact;
 
@@ -38,7 +40,14 @@
     return message;
   }
 
-  function handleSendSMS() {
+  async function handleSendSMS() {
+    if (!encryption_activated) {
+      if (
+        !(await confirm($LocalesStore.chat.sendNotEncryptedMessageConfirmation))
+      )
+        return;
+    }
+
     if (sender_message.length > 0) {
       let current_sender_message = sender_message;
       if (encryption_activated)

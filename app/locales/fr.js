@@ -11,4 +11,8 @@ export default {
     smsSendingButton: "envoi de sms",
     smsReceivingButton: "réception de sms",
   },
+  chat: {
+    sendNotEncryptedMessageConfirmation:
+      "L'encryptage n'est pas actif ! êtes-vous sûr de vouloir envoyer ce message ?",
+  },
 };
