@@ -13,7 +13,9 @@ async function createTableIfNotExists(db) {
             firstname TEXT NOT NULL, \
             lastname TEXT, \
             email TEXT, \
-            note TEXT \
+            note TEXT, \
+            aes_key TEXT NOT NULL, \
+            encryption_activated INTEGER DEFAULT 0 NOT NULL \
           );",
       (err, result) => {
         resolve(err != null);
@@ -29,13 +31,15 @@ async function insert(db, contact) {
     db.execSQL(
       "INSERT INTO " +
         contacts_table_name +
-        " (phone_number, firstname, lastname, email, note) values (?, ?, ?, ?, ?);",
+        " (phone_number, firstname, lastname, email, note, aes_key, encryption_activated) values (?, ?, ?, ?, ?, ?, ?);",
       [
         contact.phone_number,
         contact.firstname,
         contact.lastname,
         contact.email,
         contact.note,
+        contact.aes_key,
+        contact.encryption_activated,
       ],
       function (err, result) {
         if (err != null) return reject(err);
@@ -68,7 +72,7 @@ async function update(db, contact) {
       "UPDATE " +
         contacts_table_name +
         " SET " +
-        "phone_number = (?), firstname = (?), lastname = (?), email = (?), note = (?)" +
+        "phone_number = (?), firstname = (?), lastname = (?), email = (?), note = (?), aes_key = (?), encryption_activated = (?)" +
         " WHERE " +
         "phone_number = (?)",
       [
@@ -77,6 +81,8 @@ async function update(db, contact) {
         [contact.lastname],
         [contact.email],
         [contact.note],
+        [contact.aes_key],
+        [contact.encryption_activated],
         [contact.phone_number],
       ],
       function (err, result) {
@@ -106,7 +112,7 @@ export async function updateContact(contact) {
 async function getAll(db) {
   return new Promise((resolve, reject) => {
     db.all(
-      "SELECT phone_number, firstname, lastname, email, note FROM " +
+      "SELECT phone_number, firstname, lastname, email, note, aes_key, encryption_activated FROM " +
         contacts_table_name +
         ";",
       function (err, result) {
@@ -130,6 +136,8 @@ export async function getContacts() {
       lastname: contact[2],
       email: contact[3],
       note: contact[4],
+      aes_key: contact[5],
+      encryption_activated: contact[6],
     }));
   } catch (err) {
     return [];

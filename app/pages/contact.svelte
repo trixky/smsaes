@@ -6,7 +6,6 @@
   import DeleteContactActionItem from "../components/actionItems/delete_contact.svelte";
   import UpdateContactActionItem from "../components/actionItems/update_contact.svelte";
   import * as inputChecker from "../utils/input_checker";
-  import { alert } from "@nativescript/core/ui/dialogs";
   import { goBack } from "svelte-native";
 
   const MODE_NEW = "new";
@@ -27,6 +26,9 @@
   let lastname = "";
   let email = "";
   let note = "";
+  let aes_key = "";
+  let encryption_activated_switch = true;
+  $: encryption_activated = encryption_activated_switch ? 1 : 0;
 
   function updateContact() {
     if (mode === MODE_UPDATE) {
@@ -42,19 +44,25 @@
         lastname = check_contact.lastname;
         email = check_contact.email;
         note = check_contact.note;
+        aes_key = check_contact.aes_key;
+        encryption_activated_switch =
+          check_contact.encryption_activated === 1 ? true : false;
       }
     }
   }
 
   let phone_number_error = false;
   let firstname_error = false;
+  let aes_key_error = false;
 
   let phone_number_had_an_error = false;
   let firstname_had_an_error = false;
+  let aes_key_had_an_error = false;
 
   $: phone_number_had_an_error =
     phone_number_error || phone_number_had_an_error;
   $: firstname_had_an_error = firstname_error || firstname_had_an_error;
+  $: aes_key_had_an_error = aes_key_error || aes_key_had_an_error;
 
   $: _phone_number_error =
     phone_number_had_an_error &&
@@ -62,6 +70,9 @@
 
   $: _firstname_error =
     firstname_had_an_error && inputChecker.checkFirstname(firstname) != null;
+
+  $: _aes_key_error =
+    aes_key_had_an_error && inputChecker.checkAesKey(aes_key) != null;
 
   function handleBlurPhoneNumber() {
     let filtered_phone_number = "";
@@ -82,6 +93,8 @@
     lastname,
     email,
     note,
+    aes_key,
+    encryption_activated,
   };
 
   $: black_header = $BlackHeaderStore === "black";
@@ -89,6 +102,15 @@
   updateContact();
   function handleNavigatedTo() {
     updateContact();
+  }
+
+  function handleEncryptionSwitch(event) {
+    if (not_editable && event.value != encryption_activated_switch) {
+      const current_encryption_activated_switch = encryption_activated_switch;
+      setTimeout(() => {
+        encryption_activated_switch = current_encryption_activated_switch;
+      }, 5);
+    }
   }
 </script>
 
@@ -103,14 +125,16 @@
     {:else if mode === MODE_NEW}
       <SaveContactActionItem
         {contact}
-        bind:firstname_error
         bind:phone_number_error
+        bind:firstname_error
+        bind:aes_key_error
       />
     {:else}
       <UpdateContactActionItem
         {contact}
-        bind:firstname_error
         bind:phone_number_error
+        bind:firstname_error
+        bind:aes_key_error
       />
     {/if}
   </actionBar>
@@ -180,6 +204,31 @@
       />
 
       <label class="title">Encryption</label>
+
+      <switch
+        class:not-editable={not_editable}
+        class="encryption-switch"
+        horizontalAlignment={"center"}
+        bind:checked={encryption_activated_switch}
+        on:checkedChange={handleEncryptionSwitch}
+      />
+
+      <label class="input-label">
+        <formattedString>
+          <span>AES key</span>
+          {#if !not_editable}
+            <span class="asterisk" text=" *" />
+          {/if}
+        </formattedString></label
+      >
+      <textField
+        editable={!not_editable}
+        class:not-editable={not_editable}
+        class:error={_aes_key_error}
+        class="input-field"
+        bind:text={aes_key}
+        maxLength={16}
+      />
     </stackLayout>
   </scrollView>
 </page>
@@ -226,5 +275,14 @@
 
   .asterisk {
     color: var(--main-blue-1);
+  }
+
+  .encryption-switch {
+    margin: 0;
+    padding: 10 0;
+  }
+
+  .encryption-switch.not-editable {
+    opacity: 0.6;
   }
 </style>

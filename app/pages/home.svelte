@@ -139,11 +139,7 @@
 
 <page>
   <actionBar
-    title={AllPermissionsGranted
-      ? chatLoaded
-        ? "Contacts"
-        : "Load messages"
-      : "Permissions"}
+    title={AllPermissionsGranted ? "Contacts" : "Permissions"}
     class:black-header={black_header}
   >
     {#if pageLoaded}

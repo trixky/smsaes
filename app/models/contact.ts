@@ -4,4 +4,5 @@ export default interface Contact {
   lastname: string | null;
   email: string | null;
   note: string | null;
+  aes_key: string;
 }

@@ -8,8 +8,17 @@
   import { alert } from "@nativescript/core/ui/dialogs";
   import { navigate } from "svelte-native";
   import Home from "../pages/home.svelte";
+  import { encryptMessage, decryptMessage } from "../utils/aes";
 
   export let contact;
+
+  const AES_label = "~aes64: ";
+
+  $: encryption_activated =
+    $ContactsStore.find(
+      (_contact) => _contact.phone_number === contact.phone_number
+    )?.encryption_activated === 1;
+
   let local_send_id = 0;
 
   let sender_message = "";
@@ -19,9 +28,22 @@
 
   $: black_header = $BlackHeaderStore === "black";
 
+  function decryptAesMessage(message) {
+    if (message.startsWith(AES_label)) {
+      const encrypted_body = message.slice(AES_label.length);
+
+      const descrypted_body = decryptMessage(encrypted_body, contact.aes_key);
+      return AES_label + descrypted_body;
+    }
+    return message;
+  }
+
   function handleSendSMS() {
     if (sender_message.length > 0) {
-      const current_sender_message = sender_message;
+      let current_sender_message = sender_message;
+      if (encryption_activated)
+        current_sender_message =
+          AES_label + encryptMessage(current_sender_message, contact.aes_key);
       sender_message = "";
 
       const message = {
@@ -134,7 +156,7 @@
                   class:error={localMessageHadAnError(message)}
                   class="message-body"
                   style="text-align: {message.from_me ? 'right' : 'left'};"
-                  >{message.body}
+                  >{decryptAesMessage(message.body)}
                 </textView>
               </stackLayout>
             {/each}
@@ -146,6 +168,7 @@
       <gridLayout columns="*, auto" rows="auto">
         <textView
           height="auto"
+          class:encryption-activated={encryption_activated}
           class="input-field"
           row="0"
           col="0"
@@ -219,6 +242,10 @@
     min-height: 0;
     padding: 18 15;
     margin: 0;
+  }
+
+  .input-field.encryption-activated {
+    color: var(--main-blue-0);
   }
 
   .send-button {

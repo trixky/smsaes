@@ -8,6 +8,7 @@
 
   export let phone_number_error = false;
   export let firstname_error = false;
+  export let aes_key_error = false;
 
   function checkPhoneNumber() {
     const error = inputChecker.checkPhoneNumber(contact.phone_number);
@@ -31,11 +32,24 @@
     return false;
   }
 
+  function checkAesKey() {
+    const error = inputChecker.checkAesKey(contact.aes_key);
+
+    if (error != null) {
+      alert(error.message);
+      aes_key_error = true;
+      return true;
+    }
+    return false;
+  }
+
   async function addContact() {
+    const temp_aes_key_error = checkAesKey();
     const temp_firstname_error = checkFirstname();
     const temp_phone_number_error = checkPhoneNumber();
 
-    if (temp_phone_number_error || temp_firstname_error) return;
+    if (temp_phone_number_error || temp_firstname_error || temp_aes_key_error)
+      return;
 
     if (
       (await ContactsStore.addContact({
@@ -44,6 +58,8 @@
         lastname: contact.lastname,
         email: contact.email,
         note: contact.note,
+        aes_key: contact.aes_key,
+        encryption_activated: contact.encryption_activated,
       })) != null
     )
       goBack();

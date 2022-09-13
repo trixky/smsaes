@@ -16,6 +16,7 @@ The imported CSS rules must precede all other types of rules.
 @import './font-awesome.css';
 
 * {
+    --main-blue-0: rgb(165, 255, 251);
     --main-blue-1: rgb(81, 172, 167);
     --main-grey-10: #222;
     --main-grey-12: #111;
