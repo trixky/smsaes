@@ -13,6 +13,7 @@
   import LocalesStore from "../stores/locales";
   import { setText } from "nativescript-clipboard";
   import Toast from "nativescript-toast";
+  import messages from "../stores/conversations";
   export let contact;
 
   const AES_label = "~aes64: ";
@@ -31,12 +32,16 @@
 
   $: black_header = $BlackHeaderStore === "black";
 
-  function decryptAesMessage(message) {
-    if (message.startsWith(AES_label)) {
+  function isAesMessage(message) {
+    return message.startsWith(AES_label);
+  }
+
+  function decryptAesMessage(message, with_label = false) {
+    if (isAesMessage(message)) {
       const encrypted_body = message.slice(AES_label.length);
 
       const descrypted_body = decryptMessage(encrypted_body, contact.aes_key);
-      return AES_label + descrypted_body;
+      return (with_label ? AES_label : "") + descrypted_body;
     }
     return message;
   }
@@ -174,7 +179,13 @@
                   class:error={localMessageHadAnError(message)}
                   class="message-body"
                   style="text-align: {message.from_me ? 'right' : 'left'};"
-                  >{decryptAesMessage(message.body)}
+                >
+                  <formattedString>
+                    {#if isAesMessage(message.body)}
+                      <span class="aes-label">{AES_label}</span>
+                    {/if}
+                    <span>{decryptAesMessage(message.body)}</span>
+                  </formattedString>
                 </textView>
               </stackLayout>
             {/each}
@@ -279,5 +290,9 @@
 
   .blocked {
     opacity: 0.2;
+  }
+
+  .aes-label {
+    color: var(--main-grey-5);
   }
 </style>
