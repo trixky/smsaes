@@ -11,7 +11,8 @@
   import { encryptMessage, decryptMessage } from "../utils/aes";
   import { confirm } from "@nativescript/core/ui/dialogs";
   import LocalesStore from "../stores/locales";
-
+  import { setText } from "nativescript-clipboard";
+  import Toast from "nativescript-toast";
   export let contact;
 
   const AES_label = "~aes64: ";
@@ -112,6 +113,12 @@
     }
   }
 
+  function handleCopieMessage(body) {
+    setText(body).then(() => {
+      Toast.makeText($LocalesStore.chat.messageCopied).show();
+    });
+  }
+
   checkIfContactExists();
 </script>
 
@@ -154,11 +161,13 @@
                 horizontalAlignment={message.from_me ? "right" : "left"}
               >
                 <label
+                  on:tap={() => handleCopieMessage(message.body)}
                   class="message-label"
                   horizontalAlignment={message.from_me ? "right" : "left"}
                   >{timestampToString(message.date)}</label
                 >
                 <textView
+                  on:tap={() => handleCopieMessage(message.body)}
                   textWrap="true"
                   editable={false}
                   class:sending={localMessageIsSending(message)}
@@ -218,6 +227,7 @@
 
   .message {
     margin-bottom: 8;
+    background-color: aquamarine;
   }
 
   .message-label {

@@ -14,5 +14,6 @@ export default {
   chat: {
     sendNotEncryptedMessageConfirmation:
       "Encryption is not active! Are you sure you want to send this message?",
+    messageCopied: "copied",
   },
 };
