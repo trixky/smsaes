@@ -294,6 +294,7 @@
   }
 
   .aes-label {
-    color: var(--main-grey-5);
+    color: var(--main-blue-0);
+    font-style: italic;
   }
 </style>
