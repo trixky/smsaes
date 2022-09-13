@@ -5,6 +5,7 @@
   import LaunchedStore from "../stores/lauched";
   import KeepDateStore from "../stores/keep_date";
   import { timestampIsItTodayToString } from "../utils/date";
+  import { decryptMessage } from "../utils/aes";
 
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
@@ -22,6 +23,7 @@
   import ConversationsStore from "../stores/conversations";
   import { Application } from "@nativescript/core";
   import { receiveSMS } from "../api/receive_sms";
+  import Config from "../config";
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
@@ -135,6 +137,21 @@
 
   $: !$KeepDateStore && AllPermissionsGranted ? KeepDateStore.launch() : "";
   LaunchedStore.launch();
+
+  function isAesMessage(message) {
+    const ret = message.startsWith(Config.aes.header);
+    return ret;
+  }
+
+  function decryptAesMessage(message, aes_key, with_label = false) {
+    if (isAesMessage(message)) {
+      const encrypted_body = message.slice(Config.aes.header.length);
+
+      const descrypted_body = decryptMessage(encrypted_body, aes_key);
+      return (with_label ? Config.aes.header : "") + descrypted_body;
+    }
+    return message;
+  }
 </script>
 
 <page>
@@ -193,7 +210,19 @@
                   >{getLastMessageDateString(contact)}</label
                 >
               </gridLayout>
-              <label class="last-message">{getLastMessage(contact)}</label>
+              <label class="last-message">
+                <formattedString>
+                  {#if isAesMessage(getLastMessage(contact))}
+                    <span class="aes-header">{Config.aes.header}</span>
+                  {/if}
+                  <span
+                    >{decryptAesMessage(
+                      getLastMessage(contact),
+                      contact.aes_key
+                    )}</span
+                  >
+                </formattedString>
+              </label>
             </stackLayout>
           {/each}
         </stackLayout>
@@ -254,6 +283,10 @@
   .last-message {
     margin-top: 4;
     color: var(--main-grey-3);
+  }
+
+  .aes-header {
+    color: var(--main-blue-0);
     font-style: italic;
   }
 

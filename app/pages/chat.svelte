@@ -13,10 +13,9 @@
   import LocalesStore from "../stores/locales";
   import { setText } from "nativescript-clipboard";
   import Toast from "nativescript-toast";
-  import messages from "../stores/conversations";
-  export let contact;
+  import Config from "../config";
 
-  const AES_label = "~aes64: ";
+  export let contact;
 
   $: encryption_activated =
     $ContactsStore.find(
@@ -33,15 +32,15 @@
   $: black_header = $BlackHeaderStore === "black";
 
   function isAesMessage(message) {
-    return message.startsWith(AES_label);
+    return message.startsWith(Config.aes.header);
   }
 
   function decryptAesMessage(message, with_label = false) {
     if (isAesMessage(message)) {
-      const encrypted_body = message.slice(AES_label.length);
+      const encrypted_body = message.slice(Config.aes.header.length);
 
       const descrypted_body = decryptMessage(encrypted_body, contact.aes_key);
-      return (with_label ? AES_label : "") + descrypted_body;
+      return (with_label ? Config.aes.header : "") + descrypted_body;
     }
     return message;
   }
@@ -58,7 +57,8 @@
       let current_sender_message = sender_message;
       if (encryption_activated)
         current_sender_message =
-          AES_label + encryptMessage(current_sender_message, contact.aes_key);
+          Config.aes.header +
+          encryptMessage(current_sender_message, contact.aes_key);
       sender_message = "";
 
       const message = {
@@ -182,7 +182,7 @@
                 >
                   <formattedString>
                     {#if isAesMessage(message.body)}
-                      <span class="aes-label">{AES_label}</span>
+                      <span class="aes-header">{Config.aes.header}</span>
                     {/if}
                     <span>{decryptAesMessage(message.body)}</span>
                   </formattedString>
@@ -293,7 +293,7 @@
     opacity: 0.2;
   }
 
-  .aes-label {
+  .aes-header {
     color: var(--main-blue-0);
     font-style: italic;
   }
