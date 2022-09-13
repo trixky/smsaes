@@ -250,6 +250,7 @@
     min-height: 0;
     padding: 0;
     margin: 0;
+    margin-top: 3;
     border-bottom-color: yellow;
   }
 

@@ -11,11 +11,23 @@ export function receiveSMS(
   const received_message = android.telephony.SmsMessage.createFromPdu(pdus[0]);
   const date = Date.now();
 
+  const pdus_array = [];
+
+  for (let i = 0; i < pdus.length; i++) pdus_array.push(pdus[i]);
+
+  const body = pdus_array
+    .map((pdu) =>
+      android.telephony.SmsMessage.createFromPdu(pdu)
+        .getMessageBody()
+        .toString()
+    )
+    .join("");
+
   const message = {
     id: date.toString() + (++local_received_id).toString(),
     address: received_message.getOriginatingAddress(), // phone number
     from_me: false,
-    body: received_message.getMessageBody().toString(),
+    body,
     date,
     date_sent: 0,
     seen: false,
