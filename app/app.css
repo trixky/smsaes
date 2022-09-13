@@ -82,7 +82,7 @@ ActivityIndicator, .ns-dark ActivityIndicator {
     color: white;
 }
 
-Label, ActionBar > Label, StackLayout > Label, GridLayout > TextView, TextView, TextField {
+ActionBar > Label, StackLayout > Label, GridLayout > TextView, TextView, TextField {
     color: white;
     placeholder-color: var(--main-grey-5);
 }
