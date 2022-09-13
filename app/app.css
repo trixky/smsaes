@@ -32,7 +32,7 @@ Page, Frame, Frame,.nt-frame,
     background-color: black;
 }
 
-ActionBar, ActionBar.ns-android, ActionBar.ns-dark ActionBar.nt-action-bar, .nt-action-bar, .nt-action-bar.ns-dark,.nt-drawer.ns-dark .nt-drawer__header  {
+ActionBar, ActionBar.ns-android, ActionBar.ns-dark, ActionBar.ns-dark.nt-action-bar.ns-android, ActionBar.nt-action-bar, .nt-action-bar, .nt-action-bar.ns-dark,.nt-drawer.ns-dark .nt-drawer__header  {
     background-color: black;
     color: white;
 }

@@ -140,6 +140,7 @@
 <page>
   <actionBar
     title={AllPermissionsGranted ? "Contacts" : "Permissions"}
+    class="header"
     class:gold-header={black_header}
   >
     {#if pageLoaded}
@@ -229,6 +230,10 @@
 </page>
 
 <style>
+  .header {
+    background-color: black;
+  }
+
   .gold-header {
     background-color: rgb(255, 245, 99);
     color: black;
