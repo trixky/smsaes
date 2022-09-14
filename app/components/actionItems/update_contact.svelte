@@ -3,6 +3,7 @@
   import ContactsStore from "../../stores/contacts";
   import * as inputChecker from "../../utils/input_checker";
   import MasterPasswordStore from "../../stores/masterPassword";
+  import LocalesStoreStore from "../../stores/locales";
 
   export let contact;
 
@@ -64,8 +65,12 @@
         },
         $MasterPasswordStore
       )) != null
-    )
+    ) {
       goBack();
+      if (!contact.encryption_activated) {
+        alert($LocalesStoreStore.contacts.alertAesDisabled);
+      }
+    }
   }
 </script>
 

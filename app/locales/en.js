@@ -25,6 +25,7 @@ export default {
   contacts: {
     title: "Contacts",
     noContacts: "No contacts",
+    alertAesDisabled: "AES encryption is disabled for this contact.",
   },
   settings: {
     actionBar: "Settings",

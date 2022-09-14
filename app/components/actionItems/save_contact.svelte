@@ -2,6 +2,7 @@
   import { goBack } from "svelte-native";
   import ContactsStore from "../../stores/contacts";
   import MasterPasswordStore from "../../stores/masterPassword";
+  import LocalesStoreStore from "../../stores/locales";
 
   import * as inputChecker from "../../utils/input_checker";
 
@@ -65,8 +66,12 @@
         },
         $MasterPasswordStore
       )) != null
-    )
+    ) {
       goBack();
+      if (!contact.encryption_activated) {
+        alert($LocalesStoreStore.contacts.alertAesDisabled);
+      }
+    }
   }
 </script>
 
