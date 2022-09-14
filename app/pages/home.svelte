@@ -6,6 +6,8 @@
   import KeepDateStore from "../stores/keep_date";
   import { timestampIsItTodayToString } from "../utils/date";
   import { decryptMessage } from "../utils/aes";
+  import MasterPasswordStore from "../stores/masterPassword";
+  import { confirm } from "@nativescript/core/ui/dialogs";
 
   import Chat from "./chat.svelte";
   import AddContactActionItem from "../components/actionItems/add_contact.svelte";
@@ -24,11 +26,44 @@
   import { Application } from "@nativescript/core";
   import { receiveSMS } from "../api/receive_sms";
   import Config from "../config";
+  import { checkAesKey } from "../utils/input_checker";
+  import {
+    getEncryptedMasterPassword,
+    checkMasterPassword,
+    setMasterPassword,
+    reset as resetSettings,
+  } from "../db/settings";
+  import { reset as resetContacts } from "../db/contact";
 
   const contentResolver = app.android.nativeApp.getContentResolver();
 
-  let pageLoaded = false;
+  let saved_encryptedMasterPassword = undefined;
+
+  async function loadSavedEncryptedMasterPassword() {
+    saved_encryptedMasterPassword = await getEncryptedMasterPassword();
+  }
+  loadSavedEncryptedMasterPassword();
+
+  let saved_encryptedMasterPassword_is_loaded = false;
+  $: saved_encryptedMasterPassword_is_loaded =
+    saved_encryptedMasterPassword != null &&
+    saved_encryptedMasterPassword != undefined;
+
+  let saved_encryptedMasterPassword_is_defined = false;
+  $: saved_encryptedMasterPassword_is_defined =
+    saved_encryptedMasterPassword_is_loaded &&
+    saved_encryptedMasterPassword != "";
+
   let chatLoaded = true;
+
+  let pageLoaded = false;
+  let pageFullLoadedd = false;
+
+  $: pageFullLoadedd = pageLoaded && saved_encryptedMasterPassword_is_loaded;
+
+  let masterPassword = "";
+
+  let retrieve_masterPassword = "";
 
   let readSMSPermissionGranted = false;
   let sendSMSPermissionGranted = false;
@@ -152,112 +187,237 @@
     }
     return message;
   }
+
+  async function checkBeforeStart() {
+    const masterPassword_error = checkAesKey(masterPassword, true);
+    if (masterPassword_error != null) {
+      alert(masterPassword_error.message);
+    }
+
+    const AllPermissionsGranted_error = !AllPermissionsGranted;
+
+    if (AllPermissionsGranted_error) {
+      alert($LocalesStore.permissions.allMustBeAllowed);
+    }
+
+    if (!masterPassword_error && !AllPermissionsGranted_error) {
+      await setMasterPassword(masterPassword);
+      saved_encryptedMasterPassword = await getEncryptedMasterPassword();
+      AppIsStarted = true;
+    }
+  }
+
+  async function retrieveBeforeStart() {
+    if (retrieve_masterPassword.length > 0) {
+      if (await checkMasterPassword(retrieve_masterPassword)) {
+        MasterPasswordStore.set(retrieve_masterPassword);
+      } else {
+        alert($LocalesStore.masterPassword.badMasterPassword);
+      }
+    } else {
+      alert($LocalesStore.masterPassword.isRequired);
+    }
+  }
+
+  async function handleReset() {
+    if (await confirm($LocalesStore.decryption.resetConfirmation)) {
+      await resetContacts();
+      await resetSettings();
+
+      saved_encryptedMasterPassword = "";
+    }
+  }
 </script>
 
 <page>
   <actionBar
-    title={AllPermissionsGranted ? "Contacts" : "Permissions"}
+    title={saved_encryptedMasterPassword_is_defined
+      ? $MasterPasswordStore
+        ? $LocalesStore.contacts.title
+        : $LocalesStore.decryption.title
+      : $LocalesStore.beforeStarting.title}
     class="header"
     class:gold-header={black_header}
   >
-    {#if pageLoaded}
+    {#if saved_encryptedMasterPassword_is_defined}
       <AddContactActionItem />
       <SettingsActionItem />
     {/if}
   </actionBar>
-  {#if pageLoaded && chatLoaded}
-    {#if AllPermissionsGranted}
+  {#if pageFullLoadedd && chatLoaded}
+    {#if saved_encryptedMasterPassword_is_defined}
       <scrollView orientation="vertical">
-        <stackLayout class="messages">
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-          <!-- <label>{final}</label> -->
-          <!-- <button
+        {#if $MasterPasswordStore != null}
+          <stackLayout class="messages">
+            <!-- svelte-ignore a11y-label-has-associated-control -->
+            <!-- <label>{final}</label> -->
+            <!-- <button
             text="read old SMS"
             on:tap={() => {
               final = readInboxSMS(contentResolver);
             }}
           /> -->
-          {#if sorted_contacts.length > 0}
-            {#each sorted_contacts as contact}
-              <stackLayout
-                class="contact"
-                on:tap={() => {
-                  chatLoaded = false;
-                  navigate({
-                    page: Chat,
-                    props: { contact },
-                  });
-                  setTimeout(() => {
+            {#if sorted_contacts.length > 0}
+              {#each sorted_contacts as contact}
+                <stackLayout
+                  class="contact"
+                  on:tap={() => {
+                    chatLoaded = false;
+                    navigate({
+                      page: Chat,
+                      props: { contact },
+                    });
                     setTimeout(() => {
-                      chatLoaded = true;
-                    }, 200);
-                  }, 50);
-                }}
-              >
-                <gridLayout columns="2*, *" rows="auto">
-                  <label column="0" horizontalAlignment="left">
+                      setTimeout(() => {
+                        chatLoaded = true;
+                      }, 200);
+                    }, 50);
+                  }}
+                >
+                  <gridLayout columns="2*, *" rows="auto">
+                    <label column="0" horizontalAlignment="left">
+                      <formattedString>
+                        <span text={contact.firstname} />
+                        {#if contact.lastname.length > 0}
+                          <span text={" " + contact.lastname} />
+                        {/if}
+                        <span text={" (" + contact.phone_number + ")"} />
+                      </formattedString>
+                    </label>
+                    <label
+                      column="1"
+                      horizontalAlignment="right"
+                      class="last-message-date"
+                      >{getLastMessageDateString(contact)}</label
+                    >
+                  </gridLayout>
+                  <label class="last-message">
                     <formattedString>
-                      <span text={contact.firstname} />
-                      {#if contact.lastname.length > 0}
-                        <span text={" " + contact.lastname} />
+                      {#if isAesMessage(getLastMessage(contact))}
+                        <span class="aes-header">{Config.aes.header}</span>
                       {/if}
-                      <span text={" (" + contact.phone_number + ")"} />
+                      <span
+                        >{decryptAesMessage(
+                          getLastMessage(contact),
+                          contact.aes_key
+                        )}</span
+                      >
                     </formattedString>
                   </label>
-                  <label
-                    column="1"
-                    horizontalAlignment="right"
-                    class="last-message-date"
-                    >{getLastMessageDateString(contact)}</label
-                  >
-                </gridLayout>
-                <label class="last-message">
-                  <formattedString>
-                    {#if isAesMessage(getLastMessage(contact))}
-                      <span class="aes-header">{Config.aes.header}</span>
-                    {/if}
-                    <span
-                      >{decryptAesMessage(
-                        getLastMessage(contact),
-                        contact.aes_key
-                      )}</span
-                    >
-                  </formattedString>
-                </label>
+                </stackLayout>
+              {/each}
+            {:else}
+              <label class="no-contact" horizontalAlignment={"center"}
+                >{$LocalesStore.contacts.noContacts}</label
+              >
+            {/if}
+          </stackLayout>
+        {:else}
+          <dockLayout>
+            <stackLayout dock="top">
+              <label class="input-label">
+                <formattedString>
+                  <span>{$LocalesStore.masterPassword.title}</span>
+                  <span class="asterisk" text=" *" />
+                </formattedString></label
+              >
+              <textField
+                class:error={false}
+                class="input-field"
+                maxLength={16}
+                bind:text={retrieve_masterPassword}
+              />
+              <textView
+                horizontalAlignment="center"
+                textWrap="true"
+                editable={false}
+                class="master-password-text"
+                >{$LocalesStore.masterPassword.description}</textView
+              >
+
+              <button
+                text={$LocalesStore.masterPassword.start}
+                on:tap={retrieveBeforeStart}
+                class="before-start-button"
+              />
+            </stackLayout>
+            <stackLayout dock="center" />
+            <stackLayout dock="bottom" class="invert">
+              <stackLayout class="invert">
+                <textView
+                  horizontalAlignment="center"
+                  textWrap="true"
+                  editable={false}
+                  class="master-password-text warning"
+                  >{$LocalesStore.masterPassword.warning}</textView
+                >
+                <button
+                  text={$LocalesStore.masterPassword.reset}
+                  on:tap={handleReset}
+                  class="before-start-button dangerous"
+                />
               </stackLayout>
-            {/each}
-          {:else}
-            <label class="no-contact" horizontalAlignment={"center"}
-              >{$LocalesStore.contacts.noContacts}</label
-            >
-          {/if}
-        </stackLayout>
+            </stackLayout>
+          </dockLayout>
+        {/if}
       </scrollView>
     {:else}
-      <stackLayout class="permission-container">
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label horizontalAlignment="center" class="permission-demand"
-          >{$LocalesStore.permissions.demand}</label
-        >
-        <button
-          text={$LocalesStore.permissions.smsReadingButton}
-          on:tap={askReadSMSPermission}
-          class="button-permission"
-          class:granted-permission={readSMSPermissionGranted}
-        />
-        <button
-          text={$LocalesStore.permissions.smsSendingButton}
-          on:tap={askSendSMSPermission}
-          class="button-permission"
-          class:granted-permission={sendSMSPermissionGranted}
-        />
-        <button
-          text={$LocalesStore.permissions.smsReceivingButton}
-          on:tap={askReceiveSMSPermission}
-          class="button-permission"
-          class:granted-permission={receiveSMSPermissionGranted}
-        />
-      </stackLayout>
+      <scrollView orientation="vertical">
+        <stackLayout class="permission-container">
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label class="start-title">Permissions</label>
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label horizontalAlignment="center" class="start-label"
+            >{$LocalesStore.permissions.demand}</label
+          >
+          <button
+            text={$LocalesStore.permissions.smsReadingButton}
+            on:tap={askReadSMSPermission}
+            class="before-start-button"
+            class:granted-permission={readSMSPermissionGranted}
+          />
+          <button
+            text={$LocalesStore.permissions.smsSendingButton}
+            on:tap={askSendSMSPermission}
+            class="before-start-button"
+            class:granted-permission={sendSMSPermissionGranted}
+          />
+          <button
+            text={$LocalesStore.permissions.smsReceivingButton}
+            on:tap={askReceiveSMSPermission}
+            class="before-start-button"
+            class:granted-permission={receiveSMSPermissionGranted}
+          />
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label class="start-title">{$LocalesStore.masterPassword.title}</label
+          >
+          <textField
+            class:error={false}
+            class="input-field"
+            maxLength={16}
+            bind:text={masterPassword}
+          />
+          <textView
+            horizontalAlignment="center"
+            textWrap="true"
+            editable={false}
+            class="master-password-text"
+            >{$LocalesStore.masterPassword.description}</textView
+          >
+          <textView
+            horizontalAlignment="center"
+            textWrap="true"
+            editable={false}
+            class="master-password-text warning"
+            >{$LocalesStore.masterPassword.warning}</textView
+          >
+          <button
+            text={$LocalesStore.masterPassword.start}
+            on:tap={checkBeforeStart}
+            class="before-start-button"
+          />
+        </stackLayout>
+      </scrollView>
     {/if}
   {:else}
     <activityIndicator busy={true} />
@@ -304,12 +464,16 @@
     padding: 15;
   }
 
-  .permission-demand {
+  .start-label {
     margin: 10 0;
   }
 
-  .button-permission {
+  .before-start-button {
     background-color: var(--main-grey-10);
+  }
+
+  .before-start-button.dangerous {
+    background-color: var(--main-red-10);
   }
 
   .granted-permission {
@@ -320,5 +484,39 @@
   .no-contact {
     margin-top: 30;
     color: var(--main-grey-5);
+  }
+
+  .start-title {
+    padding: 15 0;
+    font-size: 20;
+    text-align: center;
+    opacity: 0.4;
+  }
+
+  .input-field {
+    margin-top: 0;
+    margin-bottom: 15;
+    padding-left: 5;
+  }
+
+  .master-password-text {
+    text-align: center;
+    min-height: 0;
+  }
+
+  .master-password-text.warning {
+    color: var(--main-red-5);
+  }
+
+  .input-label {
+    padding-left: 20;
+  }
+
+  .asterisk {
+    color: var(--main-grey-3);
+  }
+
+  .invert {
+    transform: rotate(180deg);
   }
 </style>

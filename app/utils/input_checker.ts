@@ -12,9 +12,13 @@ export function checkFirstname(phone_number: string): Error | null {
   return null;
 }
 
-export function checkAesKey(aes_key: string): Error | null {
+export function checkAesKey(aes_key: string, is_master = false): Error | null {
   if (aes_key.length < 8) {
-    return new Error("AES key must be at least 8 characters long.");
+    return new Error(
+      "The " +
+        (is_master ? "master password" : "AES key") +
+        " must be at least 8 characters long."
+    );
   }
 
   return null;

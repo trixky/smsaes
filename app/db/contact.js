@@ -171,3 +171,22 @@ export async function deleteContact(address) {
     return null;
   }
 }
+
+// ---------------------------------- RESET
+
+export async function reset() {
+  const db = await initDB(db_name);
+  await createTableIfNotExists(db);
+
+  return new Promise((resolve, reject) => {
+    db.execSQL(
+      "DELETE FROM " + contacts_table_name + ";",
+      [],
+      async function (err, result) {
+        if (err != null) return reject(err);
+        await createTableIfNotExists(db);
+        resolve(result);
+      }
+    );
+  });
+}

@@ -1,11 +1,15 @@
 import { initDB, db_name } from "./global";
 import locales from "../locales/global";
+import { decryptMessage, encryptMessage } from "../utils/aes";
 
 const settings_table_name = "settings";
 
 const TYPE_header = "header";
 const TYPE_locales = "locales";
 const TYPE_date = "date";
+const TYPE_master_password = "master_password";
+
+const CHECKER_master_password = "Sms_AES_!@#$%_CHECKER_123";
 
 async function createTableIfNotExists(db) {
   return new Promise((resolve) => {
@@ -72,11 +76,27 @@ async function addDate(db) {
   });
 }
 
+async function addMasterPassword(db) {
+  return new Promise((resolve) => {
+    db.execSQL(
+      "INSERT OR IGNORE INTO " +
+        settings_table_name +
+        " (type, value) values ((?), (?));",
+      [TYPE_master_password, ""],
+      function (err, result) {
+        if (err != null) return reject(err);
+        resolve(result);
+      }
+    );
+  });
+}
+
 async function initTable(db) {
   await createTableIfNotExists(db);
   await addHeader(db, "");
   await addLocales(db, locales.EN);
   await addDate(db);
+  await addMasterPassword(db);
 }
 
 // ---------------------------------- SET
@@ -142,7 +162,24 @@ export async function setDate() {
   }
 }
 
-// ---------------------------------- GET HEADER
+export async function setMasterPassword(master_password) {
+  const db = await initDB(db_name);
+  await initTable(db);
+
+  try {
+    const result = await set(
+      db,
+      encryptMessage(CHECKER_master_password, master_password),
+      TYPE_master_password
+    );
+    return result;
+  } catch (err) {
+    alert("An internal error occured #010");
+    return null;
+  }
+}
+
+// ---------------------------------- GET
 
 async function get(db, type) {
   return new Promise((resolve, reject) => {
@@ -199,4 +236,53 @@ export async function getDate() {
     alert("An internal error occured #009");
     return null;
   }
+}
+
+export async function checkMasterPassword(master_password) {
+  const db = await initDB(db_name);
+  await initTable(db);
+
+  try {
+    const value = await get(db, TYPE_master_password);
+    const decrypted_value = decryptMessage(value[0], master_password);
+    if (decrypted_value === CHECKER_master_password) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    alert("An internal error occured #011");
+    return null;
+  }
+}
+
+export async function getEncryptedMasterPassword() {
+  const db = await initDB(db_name);
+  await initTable(db);
+
+  try {
+    const value = await get(db, TYPE_master_password);
+    return value[0];
+  } catch (err) {
+    alert("An internal error occured #012");
+    return null;
+  }
+}
+
+// ---------------------------------- RESET
+
+export async function reset() {
+  const db = await initDB(db_name);
+  await initTable(db);
+
+  return new Promise((resolve, reject) => {
+    db.execSQL(
+      "DELETE FROM " + settings_table_name + ";",
+      [],
+      async function (err, result) {
+        if (err != null) return reject(err);
+        await initTable(db);
+        resolve(result);
+      }
+    );
+  });
 }

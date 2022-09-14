@@ -25,6 +25,7 @@ The imported CSS rules must precede all other types of rules.
     --main-grey-5: #666;
     --main-grey-3: #aaa;
     --main-red-5: rgb(235, 114, 114);
+    --main-red-10: rgb(72, 35, 35);
     font-size:12;
 }
 
@@ -32,6 +33,10 @@ Page, Frame, Frame,.nt-frame,
 .ns-dark Page, .ns-dark Frame, .ns-dark Frame, .ns-dark .nt-frame
 {
     background-color: black;
+}
+
+Page {
+    padding: 10 0;
 }
 
 ActionBar, ActionBar.ns-android, ActionBar.ns-dark, ActionBar.ns-dark.nt-action-bar.ns-android, ActionBar.nt-action-bar, .nt-action-bar, .nt-action-bar.ns-dark,.nt-drawer.ns-dark .nt-drawer__header  {
