@@ -2,6 +2,7 @@
   import { goBack } from "svelte-native";
   import ContactsStore from "../../stores/contacts";
   import * as inputChecker from "../../utils/input_checker";
+  import MasterPasswordStore from "../../stores/masterPassword";
 
   export let contact;
 
@@ -51,15 +52,18 @@
       return;
 
     if (
-      (await ContactsStore.updateContact({
-        phone_number: contact.phone_number,
-        firstname: contact.firstname,
-        lastname: contact.lastname,
-        email: contact.email,
-        note: contact.note,
-        aes_key: contact.aes_key,
-        encryption_activated: contact.encryption_activated,
-      })) != null
+      (await ContactsStore.updateContact(
+        {
+          phone_number: contact.phone_number,
+          firstname: contact.firstname,
+          lastname: contact.lastname,
+          email: contact.email,
+          note: contact.note,
+          aes_key: contact.aes_key,
+          encryption_activated: contact.encryption_activated,
+        },
+        $MasterPasswordStore
+      )) != null
     )
       goBack();
   }

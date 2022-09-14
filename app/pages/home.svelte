@@ -82,11 +82,11 @@
   $: black_header = $BlackHeaderStore === "black";
 
   function infiniteGetContacts(no_action = false) {
-    ContactsStore.getContacts();
+    ContactsStore.getContacts($MasterPasswordStore);
     if (!no_action)
       setTimeout(() => {
         infiniteGetContacts(no_action);
-      }, 500);
+      }, 1000);
   }
 
   function infiniteGetReadSMSPermission(no_action = false) {

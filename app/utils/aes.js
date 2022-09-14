@@ -16,7 +16,9 @@ function stringToKey(str) {
   return key;
 }
 
-export function encryptMessage(text, key) {
+export function encryptMessage(text, key, master_key = undefined) {
+  if (master_key != undefined) key = decryptMessage(key, master_key);
+
   const _key = stringToKey(key);
 
   var textBytes = aesjs.utils.utf8.toBytes(text);
@@ -29,7 +31,9 @@ export function encryptMessage(text, key) {
   return encryptedHex;
 }
 
-export function decryptMessage(encrypted_text, key) {
+export function decryptMessage(encrypted_text, key, master_key = undefined) {
+  if (master_key != undefined) key = decryptMessage(key, master_key);
+
   const _key = stringToKey(key);
 
   var encryptedBytes = Buffer.from(encrypted_text, "base64");
