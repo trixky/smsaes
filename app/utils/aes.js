@@ -2,10 +2,12 @@ import aesjs from "aes-js";
 
 // https://www.npmjs.com/package/aes-js
 
+const key_ender = "!@#$%^&*()_+{}[]";
+
 function stringToKey(str) {
   const key = [];
 
-  while (str.length < 16) str += str;
+  str += key_ender;
 
   str = str.slice(0, 16);
 
