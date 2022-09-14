@@ -239,7 +239,7 @@
     class="header"
     class:gold-header={black_header}
   >
-    {#if saved_encryptedMasterPassword_is_defined}
+    {#if saved_encryptedMasterPassword_is_defined && $MasterPasswordStore != null}
       <AddContactActionItem />
       <SettingsActionItem />
     {/if}
