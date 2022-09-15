@@ -250,14 +250,6 @@
       <scrollView orientation="vertical">
         {#if $MasterPasswordStore != null}
           <stackLayout class="messages">
-            <!-- svelte-ignore a11y-label-has-associated-control -->
-            <!-- <label>{final}</label> -->
-            <!-- <button
-            text="read old SMS"
-            on:tap={() => {
-              final = readInboxSMS(contentResolver);
-            }}
-          /> -->
             {#if sorted_contacts.length > 0}
               {#each sorted_contacts as contact}
                 <stackLayout
