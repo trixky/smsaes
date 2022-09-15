@@ -40,5 +40,7 @@ export default {
     sendNotEncryptedMessageConfirmation:
       "L'encryptage n'est pas actif ! êtes-vous sûr de vouloir envoyer ce message ?",
     messageCopied: "copié",
+    contactDeleted: "Le contact à ete supprimé.",
+    messageTextHint: "Message",
   },
 };

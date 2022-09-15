@@ -109,7 +109,7 @@
     );
 
     if (check_contact === undefined) {
-      alert("The contact has been deleted.").then(() => {
+      alert($LocalesStore.chat.contactDeleted).then(() => {
         navigate({
           page: Home,
         });
@@ -194,7 +194,7 @@
           class="input-field"
           row="0"
           col="0"
-          hint="Message text"
+          hint={$LocalesStore.chat.messageTextHint}
           bind:text={sender_message}
         />
         <stackLayout
