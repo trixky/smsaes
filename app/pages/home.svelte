@@ -314,7 +314,7 @@
             {/if}
           </stackLayout>
         {:else}
-          <dockLayout>
+          <dockLayout class="decryption">
             <stackLayout dock="top">
               <label class="input-label">
                 <formattedString>
@@ -478,7 +478,7 @@
   }
 
   .granted-permission {
-    background-color: green;
+    background-color: var(--main-green-5);
     text-decoration: line-through;
   }
 
@@ -519,5 +519,9 @@
 
   .invert {
     transform: rotate(180deg);
+  }
+
+  .decryption {
+    padding-top: 15;
   }
 </style>

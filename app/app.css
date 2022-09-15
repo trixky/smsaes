@@ -26,6 +26,7 @@ The imported CSS rules must precede all other types of rules.
     --main-grey-3: #aaa;
     --main-red-5: rgb(235, 114, 114);
     --main-red-10: rgb(72, 35, 35);
+    --main-green-5: rgb(111, 199, 102);
     font-size:12;
 }
 
