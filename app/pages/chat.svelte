@@ -25,7 +25,6 @@
   let local_send_id = 0;
 
   let sender_message = "";
-  // let encryption_checked = false;
 
   $: send_button_blocked = sender_message.length === 0;
 
@@ -139,12 +138,6 @@
     <DetailContactActionItem {contact} not_editable={true} />
   </actionBar>
   <gridlayout rows="*, auto">
-    <!-- <stackLayout row="0">
-      <switch
-      bind:checked={encryption_checked}
-      style="background-color: red;"
-      />
-    </stackLayout> -->
     <scrollView row="0" class="invert">
       <gridLayout columns="*, auto" rows="auto">
         <stackLayout row="0" />
