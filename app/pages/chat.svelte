@@ -8,7 +8,7 @@
   import { alert } from "@nativescript/core/ui/dialogs";
   import { navigate } from "svelte-native";
   import Home from "../pages/home.svelte";
-  import { encryptMessage, decryptMessage } from "../utils/aes";
+  import { decryptMessage } from "../utils/aes";
   import { confirm } from "@nativescript/core/ui/dialogs";
   import LocalesStore from "../stores/locales";
   import { setText } from "nativescript-clipboard";
@@ -54,43 +54,13 @@
 
     if (sender_message.length > 0) {
       let current_sender_message = sender_message;
-      if (encryption_activated)
-        current_sender_message =
-          Config.aes.header +
-          encryptMessage(current_sender_message, contact.aes_key);
       sender_message = "";
-
-      const message = {
-        id: "local",
-        address: contact.phone_number, // phone number
-        from_me: true,
-        body: current_sender_message,
-        date: Date.now(),
-        date_sent: 0,
-        seen: true,
-        read: true,
-        deleted: false,
-        local: {
-          intent: {
-            ended: false,
-            error: false,
-          },
-          delivery: undefined,
-        },
-      };
-
-      ConversationsStore.addMessage(message);
 
       sendSMS(
         contact.phone_number,
         current_sender_message,
-        message.date.toString() + (++local_send_id).toString(),
-        (ok) => {
-          ConversationsStore.updateSendedMessageIntent(message, {
-            ended: true,
-            error: !ok,
-          });
-        }
+        Date.now().toString() + (++local_send_id).toString(),
+        encryption_activated ? contact.aes_key : undefined
       );
     }
   }
