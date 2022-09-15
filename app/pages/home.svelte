@@ -242,8 +242,8 @@
   >
     {#if saved_encryptedMasterPassword_is_defined && $MasterPasswordStore != null}
       <AddContactActionItem />
-      <SettingsActionItem />
     {/if}
+    <SettingsActionItem />
   </actionBar>
   {#if pageFullLoadedd && chatLoaded}
     {#if saved_encryptedMasterPassword_is_defined}

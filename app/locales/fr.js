@@ -7,7 +7,7 @@ export default {
     description:
       "Le mot de passe maître est requis à chaque démarrage de l'application. Il permet de déchiffrer les différentes clés AES de vos contacts, afin de ne pas les stocker en clair dans votre téléphone.",
     warning:
-      "Ce mot de passe est irrécupérable. En cas d'oubli, vous devrez réinitialiser l'application: toutes vos clés AES et conversations cryptées seront détruites.",
+      "Ce mot de passe est irrécupérable. En cas d'oubli, vous devrez réinitialiser l'application: toutes vos clés AES et conversations chiffrées seront détruites.",
     start: "Démarrer",
     reset: "Reset",
     permissionsError: "Toutes les permissions doivent être autorisées.",
@@ -20,12 +20,12 @@ export default {
   decryption: {
     title: "Déchiffrage",
     resetConfirmation:
-      "Etes vous sûr de vouloir réinitialiser l'application ? Toutes vos clés AES et conversations cryptées seront détruites!",
+      "Etes vous sûr de vouloir réinitialiser l'application ? Toutes vos clés AES et conversations chiffrées seront détruites!",
   },
   contacts: {
     title: "Contacts",
     noContacts: "Aucun contact",
-    alertAesDisabled: "L'encryption AES est désactivée pour ce contact.",
+    alertAesDisabled: "Le chiffrement AES est désactivée pour ce contact.",
   },
   contactDetail: {
     detailTitle: "Detail du contact",
@@ -66,7 +66,7 @@ export default {
   },
   chat: {
     sendNotEncryptedMessageConfirmation:
-      "L'encryptage n'est pas actif ! êtes-vous sûr de vouloir envoyer ce message ?",
+      "Le chiffrement n'est pas actif ! êtes-vous sûr de vouloir envoyer ce message ?",
     messageCopied: "copié",
     contactDeleted: "Le contact à ete supprimé.",
     messageTextHint: "Message",
