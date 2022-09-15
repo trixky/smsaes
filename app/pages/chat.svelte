@@ -1,6 +1,6 @@
 <script lang="typescript">
   import ContactsStore from "../stores/contacts";
-  import BlackHeaderStore from "../stores/black_header";
+  import GoldHeaderStore from "../stores/gold_header";
   import DetailContactActionItem from "../components/actionItems/detail_contact.svelte";
   import ConversationsStore from "../stores/conversations";
   import { timestampToString } from "../utils/date";
@@ -29,7 +29,7 @@
 
   $: send_button_blocked = sender_message.length === 0;
 
-  $: black_header = $BlackHeaderStore === "black";
+  $: gold_header = $GoldHeaderStore === "gold";
 
   function isAesMessage(message) {
     return message.startsWith(Config.aes.header);
@@ -128,7 +128,7 @@
 </script>
 
 <page on:navigatedTo={checkIfContactExists}>
-  <actionBar class:gold-header={black_header}>
+  <actionBar class:gold-header={gold_header}>
     <label horizontalAlignment="left"
       >{contact.firstname +
         (contact.lastname.length > 0 ? " " + contact.lastname : "") +

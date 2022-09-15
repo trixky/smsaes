@@ -1,13 +1,13 @@
 <script>
-  import BlackHeaderStore from "../stores/black_header";
+  import GoldHeaderStore from "../stores/gold_header";
   import LocalesStore from "../stores/locales";
   import locales from "../locales/global";
 
-  $: black_header = $BlackHeaderStore === "black";
+  $: gold_header = $GoldHeaderStore === "gold";
 
-  function handleHeaderBlackSwitch(event) {
-    if (event.value) BlackHeaderStore.set("black");
-    else BlackHeaderStore.reset();
+  function handleHeaderGoldSwitch(event) {
+    if (event.value) GoldHeaderStore.set("gold");
+    else GoldHeaderStore.reset();
   }
 
   function handleHeaderLocalesSwitch(event, locale) {
@@ -29,23 +29,23 @@
 <page>
   <actionBar
     title={$LocalesStore.settings.actionBar}
-    class:gold-header={black_header}
+    class:gold-header={gold_header}
   />
   <scrollView>
     <stackLayout>
       <!--  ========================== THEME -->
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label class="title">Theme</label>
-      <!--  ------------------ BLACK HEADER -->
+      <!--  ------------------ GOLD HEADER -->
       <gridLayout columns="4*, *" rows="*" class="settings switch-container">
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label column="0">Black Header</label>
+        <label column="0">Gold Header</label>
         <switch
           class="switch"
           column="1"
           horizontalAlignment="center"
-          on:checkedChange={handleHeaderBlackSwitch}
-          checked={black_header}
+          on:checkedChange={handleHeaderGoldSwitch}
+          checked={gold_header}
         />
       </gridLayout>
       <!--  ========================== LOCAES -->

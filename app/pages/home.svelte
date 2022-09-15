@@ -1,5 +1,5 @@
 <script>
-  import BlackHeaderStore from "../stores/black_header";
+  import GoldHeaderStore from "../stores/gold_header";
   import LocalesStore from "../stores/locales";
   import ContactsStore from "../stores/contacts";
   import LaunchedStore from "../stores/lauched";
@@ -76,10 +76,10 @@
     sendSMSPermissionGranted &&
     receiveSMSPermissionGranted;
 
-  BlackHeaderStore.refresh();
+  GoldHeaderStore.refresh();
   LocalesStore.refresh();
 
-  $: black_header = $BlackHeaderStore === "black";
+  $: gold_header = $GoldHeaderStore === "gold";
 
   function infiniteGetContacts(no_action = false) {
     ContactsStore.getContacts($MasterPasswordStore);
@@ -238,7 +238,7 @@
         : $LocalesStore.decryption.title
       : $LocalesStore.beforeStarting.title}
     class="header"
-    class:gold-header={black_header}
+    class:gold-header={gold_header}
   >
     {#if saved_encryptedMasterPassword_is_defined && $MasterPasswordStore != null}
       <AddContactActionItem />

@@ -1,6 +1,6 @@
 <script>
   import ContactsStore from "../stores/contacts";
-  import BlackHeaderStore from "../stores/black_header";
+  import GoldHeaderStore from "../stores/gold_header";
   import SaveContactActionItem from "../components/actionItems/save_contact.svelte";
   import EditContactActionItem from "../components/actionItems/edit_contact.svelte";
   import DeleteContactActionItem from "../components/actionItems/delete_contact.svelte";
@@ -97,7 +97,7 @@
     encryption_activated,
   };
 
-  $: black_header = $BlackHeaderStore === "black";
+  $: gold_header = $GoldHeaderStore === "gold";
 
   updateContact();
   function handleNavigatedTo() {
@@ -117,7 +117,7 @@
 <page on:navigatedTo={handleNavigatedTo}>
   <actionBar
     title={mode === MODE_UPDATE ? "Update contact" : "New contact"}
-    class:gold-header={black_header}
+    class:gold-header={gold_header}
   >
     {#if not_editable}
       <DeleteContactActionItem {contact} />

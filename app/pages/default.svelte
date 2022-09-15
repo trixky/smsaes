@@ -1,12 +1,12 @@
 <script lang="typescript">
-  import BlackHeaderStore from "../stores/black_header";
+  import GoldHeaderStore from "../stores/gold_header";
   let message: string = "Blank Svelte Native App";
 
-  $: black_header = $BlackHeaderStore === "black";
+  $: gold_header = $GoldHeaderStore === "gold";
 </script>
 
 <page>
-  <actionBar title="Svelte Native App" class:gold-header={black_header} />
+  <actionBar title="Svelte Native App" class:gold-header={gold_header} />
   <gridLayout>
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label
