@@ -46,6 +46,15 @@ export default {
   },
   settings: {
     actionBar: "Settings",
+    subTitles: {
+      theme: "Theme",
+      locales: "Locales",
+    },
+    switchs: {
+      goldHeader: "Gold",
+      EN: "EN",
+      FR: "FR",
+    },
   },
   permissions: {
     subTitle: "Permissions",

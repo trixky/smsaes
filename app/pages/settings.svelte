@@ -35,11 +35,11 @@
     <stackLayout>
       <!--  ========================== THEME -->
       <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label class="title">Theme</label>
+      <label class="title">{$LocalesStore.settings.subTitles.theme}</label>
       <!--  ------------------ GOLD HEADER -->
       <gridLayout columns="4*, *" rows="*" class="settings switch-container">
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label column="0">Gold Header</label>
+        <label column="0">{$LocalesStore.settings.switchs.goldHeader}</label>
         <switch
           class="switch"
           column="1"
@@ -50,11 +50,11 @@
       </gridLayout>
       <!--  ========================== LOCAES -->
       <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label class="title">Locales</label>
+      <label class="title">{$LocalesStore.settings.subTitles.locales}</label>
       <!--  ------------------ LOCALES EN -->
       <gridLayout columns="4*, *" rows="*" class="settings switch-container">
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label column="0">EN</label>
+        <label column="0">{$LocalesStore.settings.switchs.EN}</label>
         <switch
           class="switch"
           column="1"
@@ -67,7 +67,7 @@
       <!--  ------------------ LOCALES FR -->
       <gridLayout columns="4*, *" rows="*" class="settings switch-container">
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label column="0">FR</label>
+        <label column="0">{$LocalesStore.settings.switchs.FR}</label>
         <switch
           class="switch"
           column="1"
