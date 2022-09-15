@@ -225,6 +225,7 @@
       await resetSettings();
 
       saved_encryptedMasterPassword = "";
+      retrieve_masterPassword = "";
     }
   }
 </script>
