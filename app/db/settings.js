@@ -138,7 +138,8 @@ export async function setLocales(value) {
   await initTable(db);
 
   try {
-    const result = await set(db, value, TYPE_date);
+    const result = await set(db, value, TYPE_locales);
+
     return result;
   } catch (err) {
     console.log("error: db >", err);

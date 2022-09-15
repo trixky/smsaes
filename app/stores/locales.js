@@ -26,7 +26,7 @@ function createLocales() {
       }
       set(value);
     },
-    switchToEnglish: async () => {
+    switchToEN: async () => {
       const db_value = locales.EN;
       const result = await setLocales(db_value);
 

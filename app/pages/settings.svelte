@@ -11,16 +11,14 @@
   }
 
   function handleHeaderLocalesSwitch(event, locale) {
-    event.object = undefined;
-
     switch (locale) {
       case locales.EN:
-        if (event.value) LocalesStore.switchToEnglish();
+        if (event.value) LocalesStore.switchToEN();
         else LocalesStore.switchToFR();
         break;
       case locales.FR:
         if (event.value) LocalesStore.switchToFR();
-        else LocalesStore.switchToEnglish();
+        else LocalesStore.switchToEN();
         break;
     }
   }
