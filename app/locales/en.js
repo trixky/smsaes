@@ -27,6 +27,23 @@ export default {
     noContacts: "No contacts",
     alertAesDisabled: "AES encryption is disabled for this contact.",
   },
+  contactDetail: {
+    detailTitle: "Contact detail",
+    newTitle: "New contact",
+    updateTitle: "Update contact",
+    subTitles: {
+      informations: "Informations",
+      encryption: "Encryption",
+    },
+    inputs: {
+      phoneNumber: "Phone number",
+      firstname: "Firstname",
+      lastname: "Lastname",
+      email: "Email",
+      note: "Note",
+      aesKey: "AES key",
+    },
+  },
   settings: {
     actionBar: "Settings",
   },

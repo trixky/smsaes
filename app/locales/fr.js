@@ -5,9 +5,9 @@ export default {
   masterPassword: {
     title: "Mot de passe maître",
     description:
-      "Le mot de passe maître est requis à chaque démarrage de l'application. Il permet de déchiffrer les différentes clefs AES de vos contacts, afin de ne pas les stocker en clair dans votre téléphone.",
+      "Le mot de passe maître est requis à chaque démarrage de l'application. Il permet de déchiffrer les différentes clés AES de vos contacts, afin de ne pas les stocker en clair dans votre téléphone.",
     warning:
-      "Ce mot de passe est irrécupérable. En cas d'oubli, vous devrez réinitialiser l'application: toutes vos clefs AES et conversations cryptées seront détruites.",
+      "Ce mot de passe est irrécupérable. En cas d'oubli, vous devrez réinitialiser l'application: toutes vos clés AES et conversations cryptées seront détruites.",
     start: "Démarrer",
     reset: "Reset",
     permissionsError: "Toutes les permissions doivent être autorisées.",
@@ -26,6 +26,23 @@ export default {
     title: "Contacts",
     noContacts: "Aucun contact",
     alertAesDisabled: "L'encryption AES est désactivée pour ce contact.",
+  },
+  contactDetail: {
+    detailTitle: "Detail du contact",
+    newTitle: "Nouveau contact",
+    updateTitle: "Mettre à jour le contact",
+    subTitles: {
+      informations: "Informations",
+      encryption: "Chiffrement",
+    },
+    inputs: {
+      phoneNumber: "Numéro de téléphone",
+      firstname: "Prénom",
+      lastname: "Nom de famille",
+      email: "Email",
+      note: "Note",
+      aesKey: "Clé AES",
+    },
   },
   settings: {
     actionBar: "Paramètres",

@@ -1,5 +1,6 @@
 <script>
   import ContactsStore from "../stores/contacts";
+  import LocalesStore from "../stores/locales";
   import GoldHeaderStore from "../stores/gold_header";
   import SaveContactActionItem from "../components/actionItems/save_contact.svelte";
   import EditContactActionItem from "../components/actionItems/edit_contact.svelte";
@@ -116,7 +117,11 @@
 
 <page on:navigatedTo={handleNavigatedTo}>
   <actionBar
-    title={mode === MODE_UPDATE ? "Update contact" : "New contact"}
+    title={mode === MODE_UPDATE
+      ? not_editable
+        ? $LocalesStore.contactDetail.detailTitle
+        : $LocalesStore.contactDetail.updateTitle
+      : $LocalesStore.contactDetail.newTitle}
     class:gold-header={gold_header}
   >
     {#if not_editable}
@@ -140,10 +145,12 @@
   </actionBar>
   <scrollView orientation="vertical">
     <stackLayout class="body">
-      <label class="title">Informations</label>
+      <label class="title"
+        >{$LocalesStore.contactDetail.subTitles.informations}</label
+      >
       <label class="input-label">
         <formattedString>
-          <span>Phone number</span>
+          <span>{$LocalesStore.contactDetail.inputs.phoneNumber}</span>
           {#if !not_editable}
             <span class="asterisk" text=" *" />
           {/if}
@@ -161,7 +168,7 @@
       />
       <label class="input-label">
         <formattedString>
-          <span>Firstname</span>
+          <span>{$LocalesStore.contactDetail.inputs.firstname}</span>
           {#if !not_editable}
             <span class="asterisk" text=" *" />
           {/if}
@@ -175,7 +182,9 @@
         bind:text={firstname}
         maxLength={20}
       />
-      <label class="input-label">Lastname</label>
+      <label class="input-label"
+        >{$LocalesStore.contactDetail.inputs.lastname}</label
+      >
       <textField
         editable={!not_editable}
         class:not-editable={not_editable}
@@ -183,7 +192,9 @@
         bind:text={lastname}
         maxLength={20}
       />
-      <label class="input-label">Email</label>
+      <label class="input-label"
+        >{$LocalesStore.contactDetail.inputs.email}</label
+      >
       <textField
         editable={!not_editable}
         class:not-editable={not_editable}
@@ -192,7 +203,9 @@
         maxLength={50}
         keyboardType="email"
       />
-      <label class="input-label">Note</label>
+      <label class="input-label"
+        >{$LocalesStore.contactDetail.inputs.note}</label
+      >
 
       <textView
         editable={!not_editable}
@@ -203,7 +216,9 @@
         bind:text={note}
       />
 
-      <label class="title">Encryption</label>
+      <label class="title"
+        >{$LocalesStore.contactDetail.subTitles.encryption}</label
+      >
 
       <switch
         class:not-editable={not_editable}
@@ -215,7 +230,7 @@
 
       <label class="input-label">
         <formattedString>
-          <span>AES key</span>
+          <span>{$LocalesStore.contactDetail.inputs.aesKey}</span>
           {#if !not_editable}
             <span class="asterisk" text=" *" />
           {/if}
