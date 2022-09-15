@@ -358,7 +358,8 @@
       <scrollView orientation="vertical">
         <stackLayout class="permission-container">
           <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="start-title">Permissions</label>
+          <label class="start-title">{$LocalesStore.permissions.subTitle}</label
+          >
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label horizontalAlignment="center" class="start-label"
             >{$LocalesStore.permissions.demand}</label

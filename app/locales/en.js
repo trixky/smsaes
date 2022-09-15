@@ -48,6 +48,7 @@ export default {
     actionBar: "Settings",
   },
   permissions: {
+    subTitle: "Permissions",
     demand: "Please allow the following permissions.",
     smsReadingButton: "sms reading",
     smsSendingButton: "sms sending",

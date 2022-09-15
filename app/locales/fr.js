@@ -48,10 +48,12 @@ export default {
     actionBar: "Paramètres",
   },
   permissions: {
+    subTitle: "Permissions",
     demand: "Veuillez autoriser les permissions suivante.",
     smsReadingButton: "lecture de sms",
     smsSendingButton: "envoi de sms",
     smsReceivingButton: "réception de sms",
+    allMustBeAllowed: "Toutes les permissions doivent être autorisées.",
   },
   chat: {
     sendNotEncryptedMessageConfirmation:
