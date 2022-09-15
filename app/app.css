@@ -36,7 +36,7 @@ Page, Frame, Frame,.nt-frame,
 }
 
 Page {
-    padding: 10 0;
+    padding-bottom: 10;
 }
 
 ActionBar, ActionBar.ns-android, ActionBar.ns-dark, ActionBar.ns-dark.nt-action-bar.ns-android, ActionBar.nt-action-bar, .nt-action-bar, .nt-action-bar.ns-dark,.nt-drawer.ns-dark .nt-drawer__header  {
