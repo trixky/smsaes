@@ -1,6 +1,6 @@
 # smsaes
 
-A mobile application that allows you to send encrypted sms in [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) build with [svelte-native](https://svelte-native.technology/).
+A mobile application that allows you to send encrypted text messages (sms) in [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) build with [svelte-native](https://svelte-native.technology/).
 
 <img src="https://github.com/trixky/smsaes/blob/main/.demo/icon.png?raw=true" alt="screenshots" width="100"/>
 
