@@ -1,10 +1,8 @@
 # smsaes
 
-<img src="https://github.com/trixky/smsaes/blob/main/.demo/icon.png?raw=true" alt="screenshots" width="100"/>
-
 A mobile application that allows you to send encrypted sms in [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) build with [svelte-native](https://svelte-native.technology/).
 
-<img src="https://github.com/trixky/smsaes/blob/main/.demo/screenshots.gif?raw=true" alt="screenshots" width="300"/>
+<img src="https://github.com/trixky/smsaes/blob/main/.demo/icon.png?raw=true" alt="screenshots" width="100"/>
 
 ## Security and privacy
 
@@ -12,6 +10,8 @@ A mobile application that allows you to send encrypted sms in [AES](https://en.w
 - Each contact has its own AES key.
 - AES keys backup is encrypted. So the application must be unlocked at startup.
 - You can enable or disable encryption for each contact.
+
+<img src="https://github.com/trixky/smsaes/blob/main/.demo/screenshots.gif?raw=true" alt="screenshots" width="300"/>
 
 ## Usage
 
