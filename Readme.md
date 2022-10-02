@@ -1,23 +1,33 @@
-This is a blank svelte-native project template. It has preprocessing with typescript support enabled. It provides an easy way to get started with a svelte native project.
+# smsaes
 
-# Usage
+<img src="https://github.com/trixky/smsaes/blob/main/.demo/icon.png?raw=true" alt="screenshots" width="100"/>
 
-You can get started with this using `degit`:
+A mobile application that allows you to send encrypted sms in [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) build with [svelte-native](https://svelte-native.technology/).
+
+<img src="https://github.com/trixky/smsaes/blob/main/.demo/screenshots.gif?raw=true" alt="screenshots" width="300"/>
+
+## Security and privacy
+
+- The contact directory of the application is dissociated from the default one of your phone.
+- Each contact has its own AES key.
+- AES keys backup is encrypted. So the application must be unlocked at startup.
+- You can enable or disable encryption for each contact.
+
+## Usage
 
 ```bash
-npx degit halfnelson/svelte-native-template myapp
-cd myapp
-npm install
+# install depdencies
+tns install
+# check available devices
+tns devices
+# run the app for android
+tns run android
 ```
 
-Your svelte-native app will be found in the `myapp` folder.
+> only made for android.
 
-Once installed use the `ns preview`, `ns build` or `ns run` commands as for a normal NativeScript application.
+### Requirements
 
-Example: install & run application on your device:
-
-```bash
-ns run android
-# or
-ns run ios
-```
+- android-sdk build/plateform-tools 33
+- nativescript 8.3.3
+- nativescript/android 7.0.0
